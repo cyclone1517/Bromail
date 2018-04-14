@@ -18,5 +18,5 @@ public interface MailService {
 	
 	public boolean addAccountBlackList(int account);	//根据账号过滤邮件
 	
-	public boolean addIPBlackList(String IP);
+	public boolean addIPBlackList(String IP);	//idea不能识别String?
 }
