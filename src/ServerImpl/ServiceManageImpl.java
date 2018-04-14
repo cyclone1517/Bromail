@@ -41,6 +41,7 @@ public class ServiceManageImpl implements ServiceManage{
 
 	@Override
 	public boolean startServer(int port) {
+		//打开服务器只能私有
 		try {
 			java.net.ServerSocket mailServer = new java.net.ServerSocket(port);
 			System.out.println("Server has been set up.");
