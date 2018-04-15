@@ -1,6 +1,6 @@
 package javaBean;
 
-public class user {
+public class User {
     private String usr_id;
     private String usrname;
     private String password;

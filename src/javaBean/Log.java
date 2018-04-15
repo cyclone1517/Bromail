@@ -2,7 +2,7 @@ package javaBean;
 
 import java.util.Date;
 
-public class log {
+public class Log {
     private String log_id;
     private String content_id;
     private Date create_date;

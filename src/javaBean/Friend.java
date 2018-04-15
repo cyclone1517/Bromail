@@ -1,6 +1,6 @@
 package javaBean;
 
-public class friend {
+public class Friend {
     private String usr_id;
     private String friend_id;
     private int blackFlag;

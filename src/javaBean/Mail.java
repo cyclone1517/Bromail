@@ -2,7 +2,7 @@ package javaBean;
 
 import java.util.Date;
 
-public class mail {
+public class Mail {
     private String mail_id;
     private String from;
     private String to;
