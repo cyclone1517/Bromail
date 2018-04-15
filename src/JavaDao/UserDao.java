@@ -1,5 +1,6 @@
 package JavaDao;
 
-public class UserDao {
+public interface UserDao {
+	
 
 }

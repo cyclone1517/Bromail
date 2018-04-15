@@ -1,5 +1,5 @@
 package JavaDao;
 
-public class LogDao {
+public interface LogDao {
 
 }

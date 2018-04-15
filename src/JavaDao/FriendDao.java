@@ -1,5 +1,5 @@
 package JavaDao;
 
-public class FriendDao {
+public interface FriendDao {
 
 }

@@ -1,5 +1,5 @@
 package JavaDao;
 
-public class MailDao {
+public interface MailDao {
 
 }
