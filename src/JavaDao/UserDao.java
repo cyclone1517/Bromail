@@ -3,7 +3,7 @@ package JavaDao;
 import javaBean.User;
 
 public interface UserDao {
-	static enum authorities {USER, MANAGER, STOP};	//权限常量0用户-1管理员-2禁用
+	static enum authorities {MANAGER, USER, STOP};	//权限常量0管理员-1用户-2禁用
 	
 	public User login(String userId, String password);
 

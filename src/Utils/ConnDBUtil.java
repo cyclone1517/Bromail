@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class ConnDBTool {
+public class ConnDBUtil {
 	public Connection openConnection(){
 		Properties prop =new Properties();
 		String driver=null;
