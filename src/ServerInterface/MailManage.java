@@ -1,4 +1,4 @@
-package ServerDao;
+package ServerInterface;
 
 public interface MailManage {
 	

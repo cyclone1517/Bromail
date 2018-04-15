@@ -2,7 +2,7 @@ package ServerImpl;
 
 import java.io.IOException;
 
-import ServerDao.ServiceManage;
+import ServerInterface.ServiceManage;
 
 /**
  * 

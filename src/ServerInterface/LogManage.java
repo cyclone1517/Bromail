@@ -1,4 +1,4 @@
-package ServerDao;
+package ServerInterface;
 
 public interface LogManage {
 	//参数类型根据文件储存状况或路径待定
