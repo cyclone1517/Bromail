@@ -1,6 +1,6 @@
-package javaImpl;
+package JavaImpl;
 
-import javaBean.User;
+import JavaBean.User;
 import JavaDao.UserDao;
 import Utils.ConnDBUtil;
 import java.sql.Connection;
