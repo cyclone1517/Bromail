@@ -1,13 +1,9 @@
 package ServerImpl;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-
+import java.net.ServerSocket;
+import java.net.Socket;
 import ServerInterface.ServiceManage;
-
-import javax.swing.*;
 
 /**
  * 
@@ -17,8 +13,14 @@ import javax.swing.*;
  */
 
 public class ServiceManageImpl extends Thread implements ServiceManage{
-
+	// 服务器的端口号
 	private int port;
+
+	// 服务器的运行状态
+	private boolean run_state = false;
+
+	// 服务器实体
+	private ServerSocket mailServer;
 
 //	初始是private
 	public ServiceManageImpl(int port){
@@ -58,12 +60,14 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	@Override
 	public boolean startServer() {
-		//打开服务器只能私有调用 test whether Chinese could be wrong
 		try {
-			java.net.ServerSocket mailServer = new java.net.ServerSocket(this.port);
+			// 实例化对象
+			mailServer = new ServerSocket(this.port);
+			// 服务器运行状态变为true
+			run_state = true;
 			System.out.println("Server has been set up.");
-			while(true){
-				java.net.Socket client = mailServer.accept();
+			while(run_state){
+				Socket client = mailServer.accept();
 				ServerThread std = new ServerThread(client);
 				std.start();
 				System.out.println("a new thread has been started to process a new client");
@@ -72,12 +76,23 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 			e.printStackTrace();
 			return false;
 		}
+		return true;
 	}
 
+	public boolean isRun_state() {
+		return this.run_state;
+	}
+
+	// by bw97
 	@Override
 	public boolean stopServer() {
-		// TODO Auto-generated method stub
-		return false;
+		this.run_state = false;
+		try{
+			mailServer.close();
+		}catch(Exception ef){
+			return false;
+		}
+		return true;
 	}
 
 	public static void main(String args[]){

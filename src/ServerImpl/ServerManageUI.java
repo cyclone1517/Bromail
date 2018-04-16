@@ -89,6 +89,12 @@ public class ServerManageUI {
             myServer.start();
             start_button.setText("点击停止服务器!");
             frame.setTitle(" brother server ~ version 1.0 (运行中)");
+        }else if (myServer.isRun_state()){
+            myServer.stopServer();
+            myServer = null;
+            start_button.setText("点击启动服务器!");
+            frame.setTitle(" brother server ~ version 1.0 ");
+
         }
     }
 
