@@ -54,12 +54,23 @@ public class ServerManageUI {
                 actionServer(port, start_button, frame);
             }
         });
-
-
         start_server.add(server_port);
         start_server.add(port);
         start_server.add(start_button);
         server_module.add(start_server);
+
+        // pop
+        JPanel pop = new JPanel(); // pop协议
+        pop.setBorder(BorderFactory.createTitledBorder("POP3协议"));
+        pop.setPreferredSize(new Dimension(580, 150)); // 框大小
+        server_module.add(pop);
+
+        // stmp
+        JPanel stmp = new JPanel(); // pop协议
+        stmp.setBorder(BorderFactory.createTitledBorder("STMP协议"));
+        stmp.setPreferredSize(new Dimension(580, 150)); // 框大小
+        server_module.add(stmp);
+
         module.add(server_module, "服务器管理");
 
 
