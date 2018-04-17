@@ -16,11 +16,11 @@ public class ServerThread extends Thread{
 	private OutputStream ops;
 	private InputStream ips;
 	private BufferedReader buffread;
-	
+
 	public ServerThread(java.net.Socket client) {
 		this.client = client;
 	}
-	
+
 	public void sendMsgToMe(String msg){
 		byte[] data = msg.getBytes();
 		try {
@@ -31,7 +31,7 @@ public class ServerThread extends Thread{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void processChat(java.net.Socket client){
 		try {
 			ops = client.getOutputStream();
@@ -47,7 +47,7 @@ public class ServerThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private boolean welcomeAndLogin(){

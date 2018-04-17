@@ -39,17 +39,44 @@ public class UserImpl implements UserDao {
     }
 
     @Override
-    public boolean addUser(String userId, String password) {
+    public boolean addUser(String userId, String userName, String password, int authority) {    //默认创建普通用户
+        String sql="insert into USER(usr_id, usrname, password , authotity) VALUES (?, ?, ?, ?)";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+
+        try {
+            PreparedStatement ptmt = conn.prepareStatement(sql);
+            ptmt.setString(1, userId);
+            ptmt.setString(2, userName);
+            ptmt.setString(3, password);
+            ptmt.setInt(4, authority);
+            ptmt.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally{
+            util.closeConnection(conn);
+        }
         return false;
     }
 
     @Override
-    public boolean addUser(String userId, String password, int authority) {
-        return false;
-    }
-
-    @Override
-    public boolean updateUser(String userId) {
+    public boolean updateUser(User user) {
+        String sql ="update USER set usrname=?, password=?, authority=? where usr_id=?";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+        try {
+            PreparedStatement ptmt=conn.prepareStatement(sql);
+            ptmt.setString(1, user.getUsrname());
+            ptmt.setString(2, user.getPassword());
+            ptmt.setInt(3, user.getAuthority());
+            ptmt.executeUpdate();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }finally{
+            util.closeConnection(conn);
+        }
         return false;
     }
 
