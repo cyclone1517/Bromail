@@ -1,7 +1,8 @@
 package ServerImpl;
 
 import java.io.IOException;
-
+import java.net.ServerSocket;
+import java.net.Socket;
 import ServerInterface.ServiceManage;
 
 /**
@@ -11,9 +12,22 @@ import ServerInterface.ServiceManage;
  *
  */
 
-public class ServiceManageImpl implements ServiceManage{
-	
-	private ServiceManageImpl(){};
+public class ServiceManageImpl extends Thread implements ServiceManage{
+	// 服务器的端口号
+	private int port;
+
+	// 服务器的运行状态
+	private boolean run_state = false;
+
+	// 服务器实体
+	private ServerSocket mailServer;
+
+//	初始是private
+	public ServiceManageImpl(int port){
+		this.port = port;
+	}
+
+	public ServiceManageImpl(){}
 
 	@Override
 	public boolean stopSMTP() {
@@ -41,32 +55,53 @@ public class ServiceManageImpl implements ServiceManage{
 
 	@Override
 	public boolean startServer(int port) {
-		//打开服务器只能私有调用 test whether Chinese could be wrong
-		try {
-			java.net.ServerSocket mailServer = new java.net.ServerSocket(port);
-			System.out.println("Server has been set up.");
-			while(true){
-				java.net.Socket client = mailServer.accept();
-//				ServerThread std = new ServerThread(client);
-//				std.start();
-				System.out.println("a new thread has been started to process a new client");
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
+		return false;
 	}
 
 	@Override
-	public boolean stopServer() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean startServer() {
+		try {
+			// 实例化对象
+			mailServer = new ServerSocket(this.port);
+			// 服务器运行状态变为true
+			run_state = true;
+			System.out.println("Server has been set up.");
+			while(run_state){
+				Socket client = mailServer.accept();
+				ServerThread std = new ServerThread(client);
+				std.start();
+				System.out.println("a new thread has been started to process a new client");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
-	
-//	public static void main(String args[]){
-//		ServiceManage svcManage = new ServiceManageImpl();
+
+	public boolean isRun_state() {
+		return this.run_state;
+	}
+
+	// by bw97
+	@Override
+	public boolean stopServer() {
+		this.run_state = false;
+		try{
+			mailServer.close();
+		}catch(Exception ef){
+			return false;
+		}
+		return true;
+	}
+
+	public static void main(String args[]){
+//		ServiceManageImpl svcManage = new ServiceManageImpl();
 //		svcManage.startServer(9091);
-//	}
-	
+	}
+
+	@Override
+	public void run() {
+		startServer();
+	}
 }
