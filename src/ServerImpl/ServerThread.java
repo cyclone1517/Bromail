@@ -58,7 +58,7 @@ public class ServerThread extends Thread{
 		this.client = client;
 	}
 	
-	public void sendMsgToMe(String msg){
+	private void sendMsgToMe(String msg){
 		byte[] data = msg.getBytes();
 		try {
 			System.out.println("[ServerThread]data is:" + data);
@@ -69,7 +69,7 @@ public class ServerThread extends Thread{
 		}
 	}
 
-	public void processChat(Socket client){
+	private void processChat(Socket client){
 		try {
 			ops = client.getOutputStream();
 			ips = client.getInputStream();
