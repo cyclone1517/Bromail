@@ -47,8 +47,8 @@ public class ServiceManageImpl implements ServiceManage{
 			System.out.println("Server has been set up.");
 			while(true){
 				java.net.Socket client = mailServer.accept();
-				ServerThread std = new ServerThread(client);
-				std.start();
+//				ServerThread std = new ServerThread(client);
+//				std.start();
 				System.out.println("a new thread has been started to process a new client");
 			}
 		} catch (IOException e) {
@@ -64,9 +64,9 @@ public class ServiceManageImpl implements ServiceManage{
 		return false;
 	}
 	
-	public static void main(String args[]){
-		ServiceManage svcManage = new ServiceManageImpl();
-		svcManage.startServer(9091);
-	}
+//	public static void main(String args[]){
+//		ServiceManage svcManage = new ServiceManageImpl();
+//		svcManage.startServer(9091);
+//	}
 	
 }
