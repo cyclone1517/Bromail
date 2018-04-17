@@ -1,6 +1,7 @@
 package JavaBean;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Mail {
     private String mail_id;
@@ -8,7 +9,7 @@ public class Mail {
     private String to;
     private String subject;
     private String content;
-    private Date date;
+    private Timestamp time;
 
     public String getMail_id() {
         return mail_id;
@@ -42,12 +43,12 @@ public class Mail {
         this.content = content;
     }
 
-    public Date getDate() {
-        return date;
+    public Timestamp getTime() {
+        return time;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 
     public String getSubject() {

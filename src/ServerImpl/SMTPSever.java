@@ -19,7 +19,12 @@ public class SMTPSever {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+    public static void main(String[] args) {
+        SMTPSever sever = new SMTPSever();
+        sever.setupSMTPSever(9090);
+    }
+
 
 }

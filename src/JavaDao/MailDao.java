@@ -1,5 +1,7 @@
 package JavaDao;
 
-public interface MailDao {
+import JavaBean.Mail;
 
+public interface MailDao {
+    void storeMail(Mail mail);
 }

@@ -2,7 +2,9 @@ package ServerImpl;
 
 import JavaBean.Mail;
 import JavaBean.User;
+import JavaDao.MailDao;
 import JavaDao.UserDao;
+import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
 
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 public class ServerThread extends Thread{
 
@@ -79,43 +83,53 @@ public class ServerThread extends Thread{
 				client.close();
 			}
 			sendMsgToMe("\r\nYou have been logged in successfully!\r\n");
-			String str = buffread.readLine();
+
 			Mail mail = new Mail();
 			int flag = 0;
-			while (!"quit".equals(str)) {
+			StringBuilder stringBuilder = new StringBuilder();
+			while (true) {
+				String str = buffread.readLine();
 				if(str.contains("MAIL FROM:")) {
-					String sender = str.substring(str.indexOf('<'), str.lastIndexOf('>'));
+					String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
 					mail.setFrom(sender);
-					sendMsgToMe("250 "+sender+"... sender OK");
+					sendMsgToMe("250 "+sender+"... sender OK\n");
 				}
 				else if (str.contains("RCPT TO:")) {
-					String receiver = str.substring(str.indexOf('<'), str.lastIndexOf('>'));
+					String receiver = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
 					mail.setTo(receiver);
-					sendMsgToMe("250 "+receiver+"... receiver OK");
+					sendMsgToMe("250 "+receiver+"... receiver OK\n");
 				}
 				else if (str.equals("SUBJ")) {
-					sendMsgToMe("350 Enter Subject. end with \\n");
+					sendMsgToMe("350 Enter Subject. end with \\n \n");
 					flag=1;
+					continue;
 				}
 				else if (str.equals("DATA")) {
-					sendMsgToMe("354 Enter mail, end with \".\" on a line by itself");
+					sendMsgToMe("354 Enter mail, end with \".\" on a line by itself\n");
 					flag=2;
+					continue;
 				}
 
 				if (flag==1) {
 					mail.setSubject(str);
+					sendMsgToMe("Subject OK\n");
 				}
 				else if (flag==2) {
-					StringBuffer stringBuffer = new StringBuffer();
 					if (str.equals(".")) {
-						mail.setContent(stringBuffer.toString());
+						mail.setContent(stringBuilder.toString());
+						sendMsgToMe("Content OK\n");
+					}else {
+						stringBuilder.append(str);
 					}
-					stringBuffer.append(str);
-
 				}
-
-				str = buffread.readLine();
+				if (str.equals("QUIT")) {
+					break;
+				}
 			}
+			Timestamp time = new Timestamp(new java.util.Date().getTime());
+			mail.setTime(time);
+			MailDao mailDao = new MailImpl();
+			mailDao.storeMail(mail);
 			client.close();
 		} catch (IOException e) {
 			e.printStackTrace();
