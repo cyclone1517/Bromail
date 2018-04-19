@@ -4,7 +4,9 @@ public class Friend {
     private String usr_id;
     private String friend_id;
     private int blackFlag;
-
+    private String remarkName;
+    public String getRemarkName(){return remarkName;}
+    public void setRemarkName(String remarkName){this.remarkName=remarkName;}
     public String getUsr_id() {
         return usr_id;
     }
