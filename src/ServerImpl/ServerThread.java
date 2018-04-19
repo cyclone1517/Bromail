@@ -1,9 +1,13 @@
 package ServerImpl;
 
+import JavaBean.Friend;
+import JavaBean.FriendInfo;
 import JavaBean.Mail;
 import JavaBean.User;
+import JavaDao.FriendDao;
 import JavaDao.MailDao;
 import JavaDao.UserDao;
+import JavaImpl.FriendImpl;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
 
@@ -15,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class ServerThread extends Thread{
 
@@ -108,6 +113,22 @@ public class ServerThread extends Thread{
 					sendMsgToMe("354 Enter mail, end with \".\" on a line by itself\n");
 					flag=2;
 					continue;
+				}
+				/**
+				 * @author: YukonChen
+				 * 自定义朋友搜索指令
+				 */
+				else if (str.equals("FRND")){
+					FriendDao fd = new FriendImpl();
+					List<FriendInfo> friendInfoList = fd.searchFriend("1000", "200");
+					int len = (friendInfoList==null)? 0:friendInfoList.size();
+					if(len==0){
+						sendMsgToMe("Sorry, you have not added any friends\r\n");
+					}
+					for(int ind=0; ind<len; ind++){
+						FriendInfo friendInfo = friendInfoList.get(ind);
+						sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
+					}
 				}
 
 				if (flag==1) {
