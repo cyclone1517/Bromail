@@ -6,25 +6,32 @@ import java.net.Socket;
 
 public class SMTPSever {
 
-    public void setupSMTPSever(int port) {
+    private boolean state = false;
+    ServerSocket server;
+
+    public void setupServer(int port) throws IOException {
+        this.state = true;
+
+         server = new ServerSocket(port);
+        System.out.println("SMTP Sever Activated! Port is "+port);
+        while (state) {
+            Socket client = server.accept();
+            System.out.println("Incoming client: "+ client.getRemoteSocketAddress());
+            ServerThread serverThread = new ServerThread(client);
+            serverThread.start();
+        }
+    }
+    public void stopServer() throws IOException {
+        this.state = false;
+        server.close();
+    }
+    public static void main(String[] args) {
+        SMTPSever sever = new SMTPSever();
         try {
-            ServerSocket server = new ServerSocket(port);
-            System.out.println("SMTP Sever Activated! Port is "+port);
-            while (true) {
-                Socket client = server.accept();
-                System.out.println("Incoming client: "+ client.getRemoteSocketAddress());
-                ServerThread serverThread = new ServerThread(client);
-                serverThread.start();
-            }
+            sever.setupServer(9090);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        SMTPSever sever = new SMTPSever();
-        sever.setupSMTPSever(9090);
-    }
-
 
 }

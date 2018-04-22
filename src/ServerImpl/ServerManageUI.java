@@ -11,9 +11,9 @@ public class ServerManageUI {
 
     public ServiceManageImpl myServer;
 
-//    public static void main(String args[]) {
-//        new ServerManageUI().showUI();
-//    }
+    public static void main(String args[]) {
+        new ServerManageUI().showUI();
+    }
 
 //	by blackwhite97
     public void showUI(){
