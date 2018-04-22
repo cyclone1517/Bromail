@@ -18,7 +18,8 @@ public class Pop3 {
     private BufferedReader buffread;
     private OutputStream outs;
     private InputStream ins;
-    private User user;
+    private User user=new User();
+    private int flag=0;
     public static void main(String[] args) {
         try {
             Pop3 server = new Pop3();
@@ -41,26 +42,116 @@ public class Pop3 {
     }
     private void processMesage(Socket client) throws IOException {
         ins = client.getInputStream();
-        outs=client.getOutputStream();
+        outs= client.getOutputStream();
         buffread = new BufferedReader(new InputStreamReader(ins));
-        if (!welcomeAndLogin()){
-            client.close();
-        }
-        else {
-            sendMsgToMe("\r\nYou have been logged in successfully!\r\n");
+        sendMsgToMe("+OK Welcome to Pop3 Mail Serve\r\n");
+        while(true){
+            while(true){
+
+                String str=buffread.readLine();
+                if(str.equals("quit")){
+                    flag=0;
+                    break;
+                }
+                else if(str.contains("user")){
+                    if(str.equals("user")){
+                        sendMsgToMe("-ERR Unknown command user");
+                    }
+                    else {
+                        System.out.print(str.substring(5));
+                        user.setUsr_id(str.substring(5));
+                        flag=1;
+                    }
+                }
+                else if(str.contains("pass")){
+                    if(str.equals("pass")){
+                        sendMsgToMe("-ERR Unknown command pass");
+                    }
+                    else{
+                        user.setPassword(str.substring(5));
+                        System.out.print(str.substring(5));
+                        if(flag==1){
+                            if(welcomeAndLogin()){
+                                break;
+                            }
+                            else{
+                                sendMsgToMe("-ERR33");
+                            }
+                        }
+                        else {
+                            sendMsgToMe("-ERR11");
+                        }
+                    }
+                }
+                else {
+                    sendMsgToMe("-ERR22");
+                }
+            }
             List<Mail> mail = new ArrayList<Mail>();
             MailDao mailDao = new MailImpl();
             mail = mailDao.getMail(user);
-
-            for (int i = 0; i < mail.size(); i++) {
-                sendMsgToMe("\r250 " + mail.get(i).getMail_id() + "... sender OK\n");
-                sendMsgToMe("\r250 " + mail.get(i).getFrom() + "... sender OK\n");
-                sendMsgToMe("\r250 " + mail.get(i).getSubject() + "... sender OK\n");
-                sendMsgToMe("\r250 " + mail.get(i).getContent() + "... sender OK\n");
-                sendMsgToMe("\r250 "+mail.get(i).getTime()+"... sender OK\n");
+            int length=mail.size();
+            int [] mailLength=new int[length];
+            for(int i=0;i<length;i++) {
+                mailLength[i]=mail.get(i).getContent().length();
             }
-            client.close();
+
+            while(flag==1) {
+                String str=buffread.readLine();
+                if(str.equals("quit")){
+
+                    break;
+                }
+                else if(str.equals("list")){
+                    for(int i=0;i<length;i++){
+                        sendMsgToMe(i+" "+mailLength[i]);
+                    }
+                    sendMsgToMe(".");
+                }
+                else if(str.contains("retr")){
+                    if(str.equals("retr")){
+                        sendMsgToMe("-ERR");
+                    }else {
+                        int n=Integer.parseInt(str.substring(5));
+                        sendMsgToMe(mail.get(n).getMail_id());
+                        sendMsgToMe(mail.get(n).getFrom());
+                        sendMsgToMe(mail.get(n).getTo());
+                        sendMsgToMe(mail.get(n).getSubject());
+                        sendMsgToMe(mail.get(n).getContent());
+                        sendMsgToMe(""+mail.get(n).getTime());
+                    }
+                }
+                else if(str.contains("dele")){
+                    if(str.equals("dele")){
+                        sendMsgToMe("-ERR");
+                    }
+                    else{
+                        int n=Integer.parseInt(str.substring(5));
+                        mailDao.deleMail(mail.get(n).getMail_id());
+                        mail = mailDao.getMail(user);
+                        length=mail.size();
+                        mailLength=new int[length];
+                        for(int i=0;i<length;i++) {
+                            mailLength[i]=mail.get(i).getContent().length();
+                        }
+                    }
+                }
+                else {
+                    sendMsgToMe("-ERR");
+                }
+            }
+            if(flag==0){
+                client.close();
+                break;
+            }
         }
+
+
+
+
+
+
+    }
 //        DataInputStream dins = new DataInputStream(ins);
 //        //服务端解包过程
 //        while (true) {
@@ -74,34 +165,27 @@ public class Pop3 {
 //            System.out.println("发来的内容是:" + msg);
 //        }
 
-    }
 
 
-    private boolean welcomeAndLogin(){
-        try {
-            sendMsgToMe("+OK Welcome to pretended brothers' Mail Pop3 Server!\r\n");
-            sendMsgToMe("please enter your userId: ");
 
-            String userId = buffread.readLine();
-            sendMsgToMe("\r\nplease enter your password: ");
-            String password = buffread.readLine();
+    private boolean welcomeAndLogin() {
 
-            UserDao userDao = new UserImpl();
-            user = userDao.login(userId, password);
-            if(user==null){
-                sendMsgToMe("\r\nsorry no such user exists");
-                return false;
-            }
-            else{
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        UserDao userDao = new UserImpl();
+        user = userDao.login(user.getUsr_id(), user.getPassword());
+        if (user == null) {
+            user =new User();
+            sendMsgToMe("-ERR user");
+            flag=0;
+            return false;
+        } else {
+            System.out.println(user.getUsrname());
+            return true;
         }
-        return true;
     }
 
     private void sendMsgToMe(String msg){
+        msg=msg+"\r\n";
         byte[] data = msg.getBytes();
         try {
             outs.write(data);
