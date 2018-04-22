@@ -31,7 +31,7 @@ public class ServerThread extends Thread{
 	private String to;
 	private String subject;
 	private String content;
-
+	private boolean flag;
 	public String getFrom() {
 		return from;
 	}
@@ -67,7 +67,7 @@ public class ServerThread extends Thread{
 		this.client = client;
 	}
 	
-	private void sendMsgToMe(String msg){
+	public void sendMsgToMe(String msg){
 		byte[] data = msg.getBytes();
 		try {
 			System.out.println("[ServerThread]data is:" + data);
@@ -76,6 +76,14 @@ public class ServerThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 
 	private void processChat(Socket client){
@@ -90,10 +98,11 @@ public class ServerThread extends Thread{
 			sendMsgToMe("\r\nYou have been logged in successfully!\r\n");
 
 			Mail mail = new Mail();
-			int flag = 0;
+			int state = 0;
 			StringBuilder stringBuilder = new StringBuilder();
-			while (true) {
-				String str = buffread.readLine();
+			String str = "";
+			while (flag) {
+				str = buffread.readLine();
 				if(str.contains("MAIL FROM:")) {
 					String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
 					mail.setFrom(sender);
@@ -106,14 +115,22 @@ public class ServerThread extends Thread{
 				}
 				else if (str.equals("SUBJ")) {
 					sendMsgToMe("350 Enter Subject. end with \\n \n");
-					flag=1;
+					state=1;
 					continue;
 				}
 				else if (str.equals("DATA")) {
 					sendMsgToMe("354 Enter mail, end with \".\" on a line by itself\n");
-					flag=2;
+					state=2;
 					continue;
 				}
+				else if (str.equals("QUIT")) {
+					break;
+				}
+				else {
+					sendMsgToMe("Invalid Command!\n");
+					continue;
+				}
+				if (state==1) {
 				/**
 				 * @author: YukonChen
 				 * 自定义朋友搜索指令
@@ -135,7 +152,7 @@ public class ServerThread extends Thread{
 					mail.setSubject(str);
 					sendMsgToMe("Subject OK\n");
 				}
-				else if (flag==2) {
+				else if (state==2) {
 					if (str.equals(".")) {
 						mail.setContent(stringBuilder.toString());
 						sendMsgToMe("Content OK\n");
@@ -143,9 +160,7 @@ public class ServerThread extends Thread{
 						stringBuilder.append(str);
 					}
 				}
-				if (str.equals("QUIT")) {
-					break;
-				}
+
 			}
 			Timestamp time = new Timestamp(new java.util.Date().getTime());
 			mail.setTime(time);
@@ -157,7 +172,10 @@ public class ServerThread extends Thread{
 		}
 		
 	}
-
+	private void receiveMail(Mail mail) {
+		MailDao mailDao = new MailImpl();
+		mailDao.storeMail(mail);
+	}
 	private boolean welcomeAndLogin(){
 		try {
 			sendMsgToMe("Welcome to pretended brothers' mailServer!\r\n");
