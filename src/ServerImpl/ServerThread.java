@@ -2,10 +2,13 @@ package ServerImpl;
 
 import JavaBean.Mail;
 import JavaBean.User;
+import JavaBean.FriendInfo;
 import JavaDao.MailDao;
 import JavaDao.UserDao;
+import JavaDao.FriendDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
+import JavaImpl.FriendImpl;
 
 
 import java.io.IOException;
@@ -15,8 +18,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class ServerThread extends Thread{
 
@@ -63,7 +66,7 @@ public class ServerThread extends Thread{
 	public ServerThread(java.net.Socket client) {
 		this.client = client;
 	}
-	
+
 	public void sendMsgToMe(String msg){
 		byte[] data = msg.getBytes();
 		try {
@@ -182,6 +185,22 @@ public class ServerThread extends Thread{
 				else if (str.equals("QUIT")) {
 					break;
 				}
+				/**
+				 * @author: YukonChen
+				 * 自定义朋友搜索指令
+				 */
+				else if (str.equals("FRND")){
+					FriendDao fd = new FriendImpl();
+					List<FriendInfo> friendInfoList = fd.searchFriend("1000", "200");
+					int len = (friendInfoList==null)? 0:friendInfoList.size();
+					if(len==0){
+						sendMsgToMe("Sorry, you have not added any friends\r\n");
+					}
+					for(int ind=0; ind<len; ind++){
+						FriendInfo friendInfo = friendInfoList.get(ind);
+						sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
+					}
+				}
 				else {
 					sendMsgToMe("500 Invalid Command!\n");
 					continue;
@@ -208,7 +227,7 @@ public class ServerThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 	private void receiveMail(Mail mail) {
 		MailDao mailDao = new MailImpl();
@@ -221,7 +240,7 @@ public class ServerThread extends Thread{
 			String userId = buffread.readLine();
 			sendMsgToMe("\r\nplease enter your password: ");
 			String password = buffread.readLine();
-			
+
 			UserDao userDao = new UserImpl();
 			User user = userDao.login(userId, password);
 			if(user==null){

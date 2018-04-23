@@ -39,8 +39,6 @@ public class MailImpl implements MailDao {
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         List<Mail> mail=new ArrayList<Mail>();
-
-
         try{
             PreparedStatement ptmt = conn.prepareStatement(sql);
             ptmt.setString(1,user.getUsrname());
@@ -58,6 +56,20 @@ public class MailImpl implements MailDao {
             e.printStackTrace();
         }
         return mail;
+    }
+    public   void deleMail(String mail_id){
+        String sql ="delete from mail where mail_id = ?";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+        try {
+            PreparedStatement ptmt = conn.prepareStatement(sql);
+            ptmt.setString(1,mail_id);
+            ptmt.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
     }
 
 }
