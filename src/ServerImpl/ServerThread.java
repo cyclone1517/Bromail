@@ -2,10 +2,13 @@ package ServerImpl;
 
 import JavaBean.Mail;
 import JavaBean.User;
+import JavaBean.FriendInfo;
 import JavaDao.MailDao;
 import JavaDao.UserDao;
+import JavaDao.FriendDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
+import JavaImpl.FriendImpl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +16,8 @@ import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class ServerThread extends Thread{
 
@@ -26,7 +29,7 @@ public class ServerThread extends Thread{
 	private String to;
 	private String subject;
 	private String content;
-
+	private boolean flag;
 	public String getFrom() {
 		return from;
 	}
@@ -61,8 +64,8 @@ public class ServerThread extends Thread{
 	public ServerThread(java.net.Socket client) {
 		this.client = client;
 	}
-	
-	private void sendMsgToMe(String msg){
+
+	public void sendMsgToMe(String msg){
 		byte[] data = msg.getBytes();
 		try {
 			System.out.println("[ServerThread]data is:" + data);
@@ -71,6 +74,14 @@ public class ServerThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 
 	private void processChat(Socket client){
@@ -85,10 +96,11 @@ public class ServerThread extends Thread{
 			sendMsgToMe("\r\nYou have been logged in successfully!\r\n");
 
 			Mail mail = new Mail();
-			int flag = 0;
+			int state = 0;
 			StringBuilder stringBuilder = new StringBuilder();
-			while (true) {
-				String str = buffread.readLine();
+			String str = "";
+			while (flag) {
+				str = buffread.readLine();
 				if(str.contains("MAIL FROM:")) {
 					String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
 					mail.setFrom(sender);
@@ -101,20 +113,42 @@ public class ServerThread extends Thread{
 				}
 				else if (str.equals("SUBJ")) {
 					sendMsgToMe("350 Enter Subject. end with \\n \n");
-					flag=1;
+					state=1;
 					continue;
 				}
 				else if (str.equals("DATA")) {
 					sendMsgToMe("354 Enter mail, end with \".\" on a line by itself\n");
-					flag=2;
+					state=2;
 					continue;
 				}
-
-				if (flag==1) {
+				else if (str.equals("QUIT")) {
+					break;
+				}
+				/**
+				 * @author: YukonChen
+				 * 自定义朋友搜索指令
+				 */
+				else if (str.equals("FRND")){
+					FriendDao fd = new FriendImpl();
+					List<FriendInfo> friendInfoList = fd.searchFriend("1000", "200");
+					int len = (friendInfoList==null)? 0:friendInfoList.size();
+					if(len==0){
+						sendMsgToMe("Sorry, you have not added any friends\r\n");
+					}
+					for(int ind=0; ind<len; ind++){
+						FriendInfo friendInfo = friendInfoList.get(ind);
+						sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
+					}
+				}
+				else {
+					sendMsgToMe("Invalid Command!\n");
+					continue;
+				}
+				if (state==1) {
 					mail.setSubject(str);
 					sendMsgToMe("Subject OK\n");
 				}
-				else if (flag==2) {
+				else if (state==2) {
 					if (str.equals(".")) {
 						mail.setContent(stringBuilder.toString());
 						sendMsgToMe("Content OK\n");
@@ -122,9 +156,7 @@ public class ServerThread extends Thread{
 						stringBuilder.append(str);
 					}
 				}
-				if (str.equals("QUIT")) {
-					break;
-				}
+
 			}
 			Timestamp time = new Timestamp(new java.util.Date().getTime());
 			mail.setTime(time);
@@ -134,9 +166,12 @@ public class ServerThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	}
 
+	}
+	private void receiveMail(Mail mail) {
+		MailDao mailDao = new MailImpl();
+		mailDao.storeMail(mail);
+	}
 	private boolean welcomeAndLogin(){
 		try {
 			sendMsgToMe("Welcome to pretended brothers' mailServer!\r\n");
@@ -144,7 +179,7 @@ public class ServerThread extends Thread{
 			String userId = buffread.readLine();
 			sendMsgToMe("\r\nplease enter your password: ");
 			String password = buffread.readLine();
-			
+
 			UserDao userDao = new UserImpl();
 			User user = userDao.login(userId, password);
 			if(user==null){
