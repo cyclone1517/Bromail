@@ -13,14 +13,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pop3 {
+public class Pop3 extends Thread {
 
     private BufferedReader buffread;
     private OutputStream outs;
     private InputStream ins;
     private User user=new User();
     private int flag=0;
-    public static void main(String[] args) {
+    Socket client;
+    public void run (){
         try {
             Pop3 server = new Pop3();
             server.setupPop3Sever(110);
@@ -28,11 +29,20 @@ public class Pop3 {
             e.printStackTrace();
         }
     }
+    public void stopServer() {
+        try {
+            client.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
     public void setupPop3Sever(int port) throws IOException {
         try {
             ServerSocket server = new ServerSocket(port);
             while (true) {
-                Socket client = server.accept();
+                client = server.accept();
 //                System.out.println("客户端IP：" + client.getRemoteSocketAddress());
                 processMesage(client);
             }
@@ -48,7 +58,7 @@ public class Pop3 {
         while(true){
             while(true){
 
-                String str=buffread.readLine();
+                String str=buffread.readLine().toLowerCase();
                 if(str.equals("quit")){
                     flag=0;
                     break;
@@ -97,7 +107,7 @@ public class Pop3 {
             }
 
             while(flag==1) {
-                String str=buffread.readLine();
+                String str=buffread.readLine().toLowerCase();
                 if(str.equals("quit")){
 
                     break;
