@@ -1,15 +1,14 @@
 package ServerImpl;
 
-import JavaBean.Friend;
-import JavaBean.FriendInfo;
 import JavaBean.Mail;
 import JavaBean.User;
-import JavaDao.FriendDao;
+import JavaBean.FriendInfo;
 import JavaDao.MailDao;
 import JavaDao.UserDao;
-import JavaImpl.FriendImpl;
+import JavaDao.FriendDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
+import JavaImpl.FriendImpl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +16,6 @@ import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -66,7 +64,7 @@ public class ServerThread extends Thread{
 	public ServerThread(java.net.Socket client) {
 		this.client = client;
 	}
-	
+
 	public void sendMsgToMe(String msg){
 		byte[] data = msg.getBytes();
 		try {
@@ -126,11 +124,6 @@ public class ServerThread extends Thread{
 				else if (str.equals("QUIT")) {
 					break;
 				}
-				else {
-					sendMsgToMe("Invalid Command!\n");
-					continue;
-				}
-				if (state==1) {
 				/**
 				 * @author: YukonChen
 				 * 自定义朋友搜索指令
@@ -147,8 +140,11 @@ public class ServerThread extends Thread{
 						sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
 					}
 				}
-
-				if (flag==1) {
+				else {
+					sendMsgToMe("Invalid Command!\n");
+					continue;
+				}
+				if (state==1) {
 					mail.setSubject(str);
 					sendMsgToMe("Subject OK\n");
 				}
@@ -170,7 +166,7 @@ public class ServerThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 	private void receiveMail(Mail mail) {
 		MailDao mailDao = new MailImpl();
@@ -183,7 +179,7 @@ public class ServerThread extends Thread{
 			String userId = buffread.readLine();
 			sendMsgToMe("\r\nplease enter your password: ");
 			String password = buffread.readLine();
-			
+
 			UserDao userDao = new UserImpl();
 			User user = userDao.login(userId, password);
 			if(user==null){
