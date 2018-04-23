@@ -57,7 +57,7 @@ public class MailImpl implements MailDao {
         }
         return mail;
     }
-    public  void deleMail(String mail_id){
+    public   void deleMail(String mail_id){
         String sql ="delete from mail where mail_id = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
