@@ -7,11 +7,13 @@ import JavaDao.UserDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -81,6 +83,65 @@ public class ServerThread extends Thread{
 		this.flag = flag;
 	}
 
+	private boolean state = false;
+	ServerSocket server;
+
+	public void setupServer(int port) throws IOException {
+		this.state = true;
+
+		server = new ServerSocket(port);
+		System.out.println("SMTP Sever Activated! Port is "+port);
+		while (state) {
+			Socket client = server.accept();
+			System.out.println("Incoming client: "+ client.getRemoteSocketAddress());
+			ServerThread serverThread = new ServerThread(client);
+			serverThread.start();
+		}
+	}
+	public void stopServer() throws IOException {
+		this.state = false;
+		server.close();
+	}
+
+	private String[] commands = {"helo", "auth", "mail", "rcpt", "data", "quit"};
+
+	public void handleInput(ServerThread server, String inStr) {
+
+		if (!checkCommand(inStr)) {
+			server.sendMsgToMe("500 Invalid command");
+			return;
+		}
+		String com = this.getCommand(inStr);
+		String arg = this.getArgument(inStr);
+
+		if ("quit".equals(com)) {
+			server.setFlag(false);
+			return;
+		}
+	}
+	private String getCommand(String inStr) {
+		int bPos = inStr.indexOf(" ");
+		if (bPos == -1)
+			return inStr.toLowerCase();
+		return inStr.substring(0, bPos).toLowerCase();
+	}
+	private String getArgument(String inStr) {
+		int bPos = inStr.indexOf(" ");
+		if (bPos == -1)
+			return "";
+		return inStr.substring(bPos + 1, inStr.length());
+	}
+	private boolean checkCommand(String inStr) {
+		if ("".equals(inStr))
+			return false;
+
+		String com = getCommand(inStr);
+
+		for (int i = 0; i < commands.length; i++)
+			if (commands[i].endsWith(com))
+				return true;
+		return false;
+	}
 	private void processChat(Socket client){
 		try {
 			ops = client.getOutputStream();
@@ -122,7 +183,7 @@ public class ServerThread extends Thread{
 					break;
 				}
 				else {
-					sendMsgToMe("Invalid Command!\n");
+					sendMsgToMe("500 Invalid Command!\n");
 					continue;
 				}
 				if (state==1) {
