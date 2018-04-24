@@ -1,8 +1,6 @@
 package JavaDao;
 
-import JavaBean.Friend;
 import JavaBean.FriendInfo;
-import JavaBean.User;
 
 import java.util.List;
 

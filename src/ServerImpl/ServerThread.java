@@ -3,13 +3,14 @@ package ServerImpl;
 import JavaBean.Mail;
 import JavaBean.User;
 import JavaBean.FriendInfo;
+import JavaDao.LogDao;
 import JavaDao.MailDao;
 import JavaDao.UserDao;
 import JavaDao.FriendDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
 import JavaImpl.FriendImpl;
-
+import ServerInterface.LogManage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,9 +95,11 @@ public class ServerThread extends Thread{
 
 		server = new ServerSocket(port);
 		System.out.println("SMTP Sever Activated! Port is "+port);
+
 		while (state) {
 			Socket client = server.accept();
-			System.out.println("Incoming client: "+ client.getRemoteSocketAddress());
+//			logManage.addLog(LogDao.LogType.SMTP, client);
+//			System.out.println("Incoming client");
 			ServerThread serverThread = new ServerThread(client);
 			serverThread.start();
 		}
@@ -160,6 +163,7 @@ public class ServerThread extends Thread{
 			int state = 0;
 			StringBuilder stringBuilder = new StringBuilder();
 			String str = "";
+			flag = true;
 			while (flag) {
 				str = buffread.readLine();
 				if(str.contains("MAIL FROM:")) {
@@ -257,6 +261,9 @@ public class ServerThread extends Thread{
 	}
 
 	public void run(){
+		LogManage logManage = new LogManageImpl();
+		logManage.addLog(LogDao.LogType.SMTP, client);
+		System.out.println("Incoming client:" + client.getRemoteSocketAddress());
 		processChat(this.client);
 	}
 

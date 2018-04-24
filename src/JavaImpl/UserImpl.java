@@ -41,7 +41,7 @@ public class UserImpl implements UserDao {
 
     @Override
     public boolean addUser(String userId, String userName, String password, int authority) {    //默认创建普通用户
-        String sql="insert into USER(usr_id, usrname, password , authotity) VALUES (?, ?, ?, ?)";
+        String sql="insert into user(usr_id, usrname, password , authority) VALUES (?, ?, ?, ?)";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
 

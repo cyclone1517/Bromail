@@ -21,7 +21,7 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	// 服务器实体
 	private ServerSocket mailServer;
-	private SMTPSever smtpSever;
+	//private SMTPSever smtpSever;
 //	初始是private
 	public ServiceManageImpl(int port){
 		this.port = port;
@@ -31,24 +31,26 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	@Override
 	public boolean stopSMTP() {
-		try {
-			smtpSever.stopServer();
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+//		try {
+//			smtpSever.stopServer();
+//			return true;
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+		return false;
 	}
 
 	@Override
 	public boolean startSMTP() {
-		try {
-			smtpSever.setupServer(9090);
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+//		try {
+//			smtpSever.setupServer(9090);
+//			return true;
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+		return false;
 	}
 
 	@Override

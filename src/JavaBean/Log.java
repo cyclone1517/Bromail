@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Log {
     private String log_id;
-    private String content_id;
+    private String content;
     private Date create_date;
     private Date modify_date;
 
@@ -17,11 +17,11 @@ public class Log {
     }
 
     public String getContent_id() {
-        return content_id;
+        return content;
     }
 
     public void setContent_id(String content_id) {
-        this.content_id = content_id;
+        this.content = content_id;
     }
 
     public Date getCreate_date() {
