@@ -22,7 +22,7 @@ import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class ServerThread extends Thread{
+public class SMTPServer extends Thread{
 
 	private java.net.Socket client;
 	private OutputStream ops;
@@ -64,14 +64,14 @@ public class ServerThread extends Thread{
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public ServerThread(java.net.Socket client) {
+	public SMTPServer(java.net.Socket client) {
 		this.client = client;
 	}
 
 	public void sendMsgToMe(String msg){
 		byte[] data = msg.getBytes();
 		try {
-			System.out.println("[ServerThread]data is:" + data);
+			System.out.println("[SMTPServer]data is:" + data);
 			ops.write(data);
 			ops.flush();
 		} catch (IOException e) {
@@ -100,8 +100,8 @@ public class ServerThread extends Thread{
 			Socket client = server.accept();
 //			logManage.addLog(LogDao.LogType.SMTP, client);
 //			System.out.println("Incoming client");
-			ServerThread serverThread = new ServerThread(client);
-			serverThread.start();
+			SMTPServer SMTPServer = new SMTPServer(client);
+			SMTPServer.start();
 		}
 	}
 	public void stopServer() throws IOException {
@@ -111,7 +111,7 @@ public class ServerThread extends Thread{
 
 	private String[] commands = {"helo", "auth", "mail", "rcpt", "data", "quit"};
 
-	public void handleInput(ServerThread server, String inStr) {
+	public void handleInput(SMTPServer server, String inStr) {
 
 		if (!checkCommand(inStr)) {
 			server.sendMsgToMe("500 Invalid command");

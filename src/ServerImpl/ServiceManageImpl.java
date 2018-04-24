@@ -80,7 +80,7 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 			System.out.println("Server has been set up.");
 			while(run_state){
 				Socket client = mailServer.accept();
-				ServerThread std = new ServerThread(client);
+				SMTPServer std = new SMTPServer(client);
 				std.start();
 				System.out.println("a new thread has been started to process a new client");
 			}
