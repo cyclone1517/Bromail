@@ -62,7 +62,7 @@ public class POP3Server extends Thread {
         ins = client.getInputStream();
         outs= client.getOutputStream();
         buffread = new BufferedReader(new InputStreamReader(ins));
-        sendMsgToMe("+OK Welcome to POP3Server Mail Serve\r\n");
+        sendMsgToMe("+OK Welcome to POP3Server Mail Server\r\n");
         while(true){
             while(true){
                 String str=buffread.readLine().toLowerCase();

@@ -112,8 +112,8 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
     }
 
     public static void main(String args[]){
-//		ServiceManageImpl svcManage = new ServiceManageImpl();
-//		svcManage.startServer(9091);
+		ServiceManageImpl svcManage = new ServiceManageImpl();
+		svcManage.startSMTP(9090);
     }
 
     @Override

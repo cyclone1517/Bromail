@@ -145,6 +145,7 @@ public class SMTPServer extends Thread{
 				else if(str.toUpperCase().contains("MAIL FROM:")) {
                     String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
                     mail.setFrom(sender);
+
                     sendMsgToMe("250 "+sender+"... sender OK\n");
                 }
 				else if (str.toUpperCase().contains("RCPT TO:")) {
@@ -182,10 +183,7 @@ public class SMTPServer extends Thread{
                         sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
                     }
                 }
-				else {
-					sendMsgToMe("500 Invalid Command!\n");
-					continue;
-				}
+
                 if (state==1) {
                     mail.setSubject(str);
                     sendMsgToMe("Subject OK\n");
