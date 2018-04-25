@@ -12,7 +12,7 @@ import java.util.List;
 public class MailImpl implements MailDao {
     @Override
     public void storeMail(Mail mail) {
-        String sql = "insert into mail(sender, receiver, time, subject, content) values(?,?,?,?,?)";
+        String sql = "insert into MAIL(SENDER, receiver, time, subject, content) values(?,?,?,?,?)";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
 
@@ -35,7 +35,7 @@ public class MailImpl implements MailDao {
 
     }
     public List<Mail> getMail(User user){
-        String sql ="select * from mail where receiver = ?";
+        String sql ="select * from MAIL where receiver = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         List<Mail> mail=new ArrayList<Mail>();
@@ -58,7 +58,7 @@ public class MailImpl implements MailDao {
         return mail;
     }
     public   void deleMail(String mail_id){
-        String sql ="delete from mail where mail_id = ?";
+        String sql ="delete from MAIL where mail_id = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         try {

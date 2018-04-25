@@ -8,6 +8,7 @@ import java.util.Properties;
 public class ConnDBUtil {
 	public Connection openConnection(){
 		Properties prop =new Properties();
+//		null，通过getClassLoader装载
 		String driver=null;
 		String url=null;
 		String username=null;
