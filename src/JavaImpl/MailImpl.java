@@ -12,7 +12,7 @@ import java.util.List;
 public class MailImpl implements MailDao {
     @Override
     public void storeMail(Mail mail) {
-        String sql = "insert into mail(sender, receiver, time, subject, content) values(?,?,?,?,?)";
+        String sql = "insert into MAIL(sender, receiver, time, subject, content) values(?,?,?,?,?)";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
 
@@ -35,19 +35,19 @@ public class MailImpl implements MailDao {
 
     }
     public List<Mail> getMail(User user){
-        String sql ="select * from mail where receiver = ?";
+        String sql ="select * from MAIL where receiver = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         List<Mail> mail=new ArrayList<Mail>();
         try{
             PreparedStatement ptmt = conn.prepareStatement(sql);
-            ptmt.setString(1,user.getUsrname());
+            ptmt.setString(1,user.getUsr_id());
             ResultSet rs=ptmt.executeQuery();
             while(rs.next()){
                 Mail m=new Mail();
                 m.setContent(rs.getString("content"));
                 m.setFrom(rs.getString("sender"));
-                m.setTime(rs.getTimestamp("date"));
+                m.setTime(rs.getTimestamp("time"));
                 m.setSubject(rs.getString("subject"));
                 m.setMail_id(rs.getString("mail_id"));
                 mail.add(m);
@@ -58,7 +58,7 @@ public class MailImpl implements MailDao {
         return mail;
     }
     public   void deleMail(String mail_id){
-        String sql ="delete from mail where mail_id = ?";
+        String sql ="delete from MAIL where mail_id = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         try {
