@@ -21,7 +21,7 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	// 服务器实体
 	private ServerSocket mailServer;
-	//private SMTPSever smtpSever;
+	private SMTPServer smtpServer;
 //	初始是private
 	public ServiceManageImpl(int port){
 		this.port = port;
@@ -31,20 +31,19 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	@Override
 	public boolean stopSMTP() {
-//		try {
-//			smtpSever.stopServer();
-//			return true;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-		return false;
+		try {
+			smtpServer.stopServer();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	public boolean startSMTP() {
 //		try {
-//			smtpSever.setupServer(9090);
+//			smtpServer.setupServer(9090);
 //			return true;
 //		} catch (IOException e) {
 //			e.printStackTrace();
@@ -65,23 +64,20 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 		return false;
 	}
 
-	@Override
-	public boolean startServer(int port) {
-		return false;
-	}
 
 	@Override
-	public boolean startServer() {
+	public boolean startServer(int port) {
 		try {
 			// 实例化对象
-			mailServer = new ServerSocket(this.port);
+			mailServer = new ServerSocket(port);
 			// 服务器运行状态变为true
 			run_state = true;
 			System.out.println("Server has been set up.");
 			while(run_state){
 				Socket client = mailServer.accept();
-				SMTPServer std = new SMTPServer(client);
-				std.start();
+				SMTPServer smtpServer = new SMTPServer(client);
+				System.out.println("Incoming client"+client.getRemoteSocketAddress());
+				smtpServer.start();
 				System.out.println("a new thread has been started to process a new client");
 			}
 		} catch (IOException e) {
@@ -89,6 +85,11 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean startServer() {
+		return false;
 	}
 
 	public boolean isRun_state() {
@@ -108,8 +109,8 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 	}
 
 	public static void main(String args[]){
-//		ServiceManageImpl svcManage = new ServiceManageImpl();
-//		svcManage.startServer(9091);
+		ServiceManageImpl svcManage = new ServiceManageImpl();
+		svcManage.startServer(9090);
 	}
 
 	@Override

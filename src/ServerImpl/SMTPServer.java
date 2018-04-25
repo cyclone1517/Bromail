@@ -90,20 +90,7 @@ public class SMTPServer extends Thread{
 	private boolean state = false;
 	ServerSocket server;
 
-	public void setupServer(int port) throws IOException {
-		this.state = true;
 
-		server = new ServerSocket(port);
-		System.out.println("SMTP Sever Activated! Port is "+port);
-
-		while (state) {
-			Socket client = server.accept();
-//			logManage.addLog(LogDao.LogType.SMTP, client);
-//			System.out.println("Incoming client");
-			SMTPServer SMTPServer = new SMTPServer(client);
-			SMTPServer.start();
-		}
-	}
 	public void stopServer() throws IOException {
 		this.state = false;
 		server.close();
@@ -149,6 +136,7 @@ public class SMTPServer extends Thread{
 		return false;
 	}
 	private void processChat(Socket client){
+		String servername = "bro.com";
 		try {
 			ops = client.getOutputStream();
 			ips = client.getInputStream();
@@ -158,6 +146,7 @@ public class SMTPServer extends Thread{
 				client.close();
 			}
 			sendMsgToMe("\r\nYou have been logged in successfully!\r\n");
+			sendMsgToMe("220 bro.com\n");
 
 			Mail mail = new Mail();
 			int state = 0;
@@ -166,27 +155,32 @@ public class SMTPServer extends Thread{
 			flag = true;
 			while (flag) {
 				str = buffread.readLine();
-				if(str.contains("MAIL FROM:")) {
+				if (str.toUpperCase().startsWith("HELO")) {
+					String clientname = str.substring(str.indexOf(" ")+1, str.length());
+					sendMsgToMe("250 Hello "+clientname+", Please to meet you\n");
+				}
+				else if(str.toUpperCase().contains("MAIL FROM:")) {
 					String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
 					mail.setFrom(sender);
 					sendMsgToMe("250 "+sender+"... sender OK\n");
 				}
-				else if (str.contains("RCPT TO:")) {
+				else if (str.toUpperCase().contains("RCPT TO:")) {
 					String receiver = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
 					mail.setTo(receiver);
 					sendMsgToMe("250 "+receiver+"... receiver OK\n");
 				}
-				else if (str.equals("SUBJ")) {
+				else if (str.toUpperCase().equals("SUBJ")) {
 					sendMsgToMe("350 Enter Subject. end with \\n \n");
 					state=1;
 					continue;
 				}
-				else if (str.equals("DATA")) {
+				else if (str.toUpperCase().equals("DATA")) {
 					sendMsgToMe("354 Enter mail, end with \".\" on a line by itself\n");
 					state=2;
 					continue;
 				}
-				else if (str.equals("QUIT")) {
+				else if (str.toUpperCase().equals("QUIT")) {
+					sendMsgToMe("221 "+servername+"\n");
 					break;
 				}
 				/**
@@ -205,10 +199,10 @@ public class SMTPServer extends Thread{
 						sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
 					}
 				}
-				else {
-					sendMsgToMe("500 Invalid Command!\n");
-					continue;
-				}
+//				else {
+//					sendMsgToMe("500 Invalid Command!\n");
+//					continue;
+//				}
 				if (state==1) {
 					mail.setSubject(str);
 					sendMsgToMe("Subject OK\n");
@@ -248,7 +242,7 @@ public class SMTPServer extends Thread{
 			UserDao userDao = new UserImpl();
 			User user = userDao.login(userId, password);
 			if(user==null){
-				sendMsgToMe("\r\nsorry no such user exists");
+				sendMsgToMe("\r\nsorry no such user exists\r\n");
 				return false;
 			}
 			else{
