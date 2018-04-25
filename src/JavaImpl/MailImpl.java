@@ -12,7 +12,7 @@ import java.util.List;
 public class MailImpl implements MailDao {
     @Override
     public void storeMail(Mail mail) {
-        String sql = "insert into Mail(sender, receiver, time, subject, content) values(?,?,?,?,?)";
+        String sql = "insert into MAIL(sender, receiver, time, subject, content) values(?,?,?,?,?)";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
 
