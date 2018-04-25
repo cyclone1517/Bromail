@@ -1,5 +1,7 @@
 package ServerImpl;
 
+import ServerInterface.ServiceManage;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -96,10 +98,13 @@ public class ServerManageUI {
     public void actionServer(JTextField port, JButton start_button, JFrame frame){
         if (myServer == null){
             int thisPort = Integer.parseInt(port.getText());
-            myServer = new ServiceManageImpl(thisPort);
+            myServer = new ServiceManageImpl(thisPort, ServiceManageImpl.ServerType.SMTP);
             myServer.start();
             start_button.setText("点击停止服务器!");
             frame.setTitle(" brother server ~ version 1.0 (运行中)");
+
+            ServiceManageImpl sm = new ServiceManageImpl(thisPort+1, ServiceManageImpl.ServerType.POP);
+            sm.start();
         }else if (myServer.isRun_state()){
             myServer.stopServer();
             myServer = null;

@@ -15,6 +15,8 @@ import ServerInterface.ServiceManage;
 public class ServiceManageImpl extends Thread implements ServiceManage{
 	// 服务器的端口号
 	private int port;
+	enum ServerType {POP, SMTP}
+	private ServerType serverType;
 
 	// 服务器的运行状态
 	private boolean run_state = false;
@@ -23,35 +25,12 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 	private ServerSocket mailServer;
 	//private SMTPSever smtpSever;
 //	初始是private
-	public ServiceManageImpl(int port){
+	public ServiceManageImpl(int port, ServerType serverType){
 		this.port = port;
+		this.serverType = serverType;
 	}
 
 	public ServiceManageImpl(){}
-
-	@Override
-	public boolean stopSMTP() {
-//		try {
-//			smtpSever.stopServer();
-//			return true;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-		return false;
-	}
-
-	@Override
-	public boolean startSMTP() {
-//		try {
-//			smtpSever.setupServer(9090);
-//			return true;
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-		return false;
-	}
 
 	@Override
 	public boolean stopPOP3() {
@@ -60,9 +39,24 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 	}
 
 	@Override
-	public boolean startPOP3() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean startPOP3(int port) {
+		try {
+			// 实例化对象
+			mailServer = new ServerSocket(port);
+			// 服务器运行状态变为true
+			run_state = true;
+			System.out.println("POPServer has been set up.");
+			while(run_state){
+				Socket client = mailServer.accept();
+				POP3Server std = new POP3Server(client);
+				std.start();
+				System.out.println("a new thread has been started to process a new client");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -72,12 +66,22 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	@Override
 	public boolean startServer() {
+		return false;
+	}
+
+	@Override
+	public boolean stopServer() {
+		return false;
+	}
+
+	@Override
+	public boolean startSMTP(int port) {
 		try {
 			// 实例化对象
-			mailServer = new ServerSocket(this.port);
+			mailServer = new ServerSocket(port);
 			// 服务器运行状态变为true
 			run_state = true;
-			System.out.println("Server has been set up.");
+			System.out.println("SMTPServer has been set up.");
 			while(run_state){
 				Socket client = mailServer.accept();
 				SMTPServer std = new SMTPServer(client);
@@ -97,7 +101,7 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	// by bw97
 	@Override
-	public boolean stopServer() {
+	public boolean stopSMTP() {
 		this.run_state = false;
 		try{
 			mailServer.close();
@@ -114,6 +118,11 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	@Override
 	public void run() {
-		startServer();
+		if(serverType == ServerType.SMTP){
+			startSMTP(port);
+		}
+		if(serverType == ServerType.POP){
+			startPOP3(port);
+		}
 	}
 }

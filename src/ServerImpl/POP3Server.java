@@ -21,35 +21,43 @@ public class POP3Server extends Thread {
     private User user=new User();
     private int flag=0;
     Socket client;
-    public void run (){
-        try {
-            POP3Server server = new POP3Server();
-            server.setupPop3Sever(110);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-    public void stopServer() {
-        try {
-            client.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
 
+    public POP3Server(java.net.Socket client) {
+        this.client = client;
     }
 
-    public void setupPop3Sever(int port) throws IOException {
+    private void sendMsgToMe(String msg){
+        msg=msg+"\r\n";
+        byte[] data = msg.getBytes();
         try {
-            ServerSocket server = new ServerSocket(port);
-            while (true) {
-                client = server.accept();
-//                System.out.println("客户端IP：" + client.getRemoteSocketAddress());
-                processMesage(client);
-            }
+            outs.write(data);
+            outs.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+//    public void stopServer() {
+//        try {
+//            client.close();
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+//    public void setupPop3Sever(int port) throws IOException {
+//        try {
+//            ServerSocket server = new ServerSocket(port);
+//            while (true) {
+//                client = server.accept();
+//                System.out.println("客户端IP：" + client.getRemoteSocketAddress());
+//                processMesage(client);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     private void processMesage(Socket client) throws IOException {
         ins = client.getInputStream();
         outs= client.getOutputStream();
@@ -57,7 +65,6 @@ public class POP3Server extends Thread {
         sendMsgToMe("+OK Welcome to POP3Server Mail Serve\r\n");
         while(true){
             while(true){
-
                 String str=buffread.readLine().toLowerCase();
                 if(str.equals("quit")){
                     flag=0;
@@ -157,10 +164,6 @@ public class POP3Server extends Thread {
         }
 
 
-
-
-
-
     }
 //        DataInputStream dins = new DataInputStream(ins);
 //        //服务端解包过程
@@ -176,11 +179,7 @@ public class POP3Server extends Thread {
 //        }
 
 
-
-
     private boolean welcomeAndLogin() {
-
-
         UserDao userDao = new UserImpl();
         user = userDao.login(user.getUsr_id(), user.getPassword());
         if (user == null) {
@@ -194,12 +193,11 @@ public class POP3Server extends Thread {
         }
     }
 
-    private void sendMsgToMe(String msg){
-        msg=msg+"\r\n";
-        byte[] data = msg.getBytes();
-        try {
-            outs.write(data);
-            outs.flush();
+
+
+    public void run (){
+        try{
+            processMesage(this.client);
         } catch (IOException e) {
             e.printStackTrace();
         }

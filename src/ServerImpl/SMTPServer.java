@@ -33,37 +33,7 @@ public class SMTPServer extends Thread{
 	private String subject;
 	private String content;
 	private boolean flag;
-	public String getFrom() {
-		return from;
-	}
 
-	public void setFrom(String from) {
-		this.from = from;
-	}
-
-	public String getTo() {
-		return to;
-	}
-
-	public void setTo(String to) {
-		this.to = to;
-	}
-
-	public String getSubject() {
-		return subject;
-	}
-
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
 	public SMTPServer(java.net.Socket client) {
 		this.client = client;
 	}
@@ -90,24 +60,24 @@ public class SMTPServer extends Thread{
 	private boolean state = false;
 	ServerSocket server;
 
-	public void setupServer(int port) throws IOException {
-		this.state = true;
-
-		server = new ServerSocket(port);
-		System.out.println("SMTP Sever Activated! Port is "+port);
-
-		while (state) {
-			Socket client = server.accept();
+//	public void setupServer(int port) throws IOException {
+//		this.state = true;
+//
+//		server = new ServerSocket(port);
+//		System.out.println("SMTP Sever Activated! Port is "+port);
+//
+//		while (state) {
+//			Socket client = server.accept();
 //			logManage.addLog(LogDao.LogType.SMTP, client);
 //			System.out.println("Incoming client");
-			SMTPServer SMTPServer = new SMTPServer(client);
-			SMTPServer.start();
-		}
-	}
-	public void stopServer() throws IOException {
-		this.state = false;
-		server.close();
-	}
+//			SMTPServer SMTPServer = new SMTPServer(client);
+//			SMTPServer.start();
+//		}
+//	}
+//	public void stopServer() throws IOException {
+//		this.state = false;
+//		server.close();
+//	}
 
 	private String[] commands = {"helo", "auth", "mail", "rcpt", "data", "quit"};
 
