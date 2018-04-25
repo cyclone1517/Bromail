@@ -89,19 +89,20 @@ public class POP3Server extends Thread {
                         System.out.print(str.substring(5));
                         if(flag==1){
                             if(welcomeAndLogin()){
+                                sendMsgToMe("+OK login successfully");
                                 break;
                             }
                             else{
-                                sendMsgToMe("-ERR33");
+                                sendMsgToMe("-ERR");
                             }
                         }
                         else {
-                            sendMsgToMe("-ERR11");
+                            sendMsgToMe("-ERR");
                         }
                     }
                 }
                 else {
-                    sendMsgToMe("-ERR22");
+                    sendMsgToMe("-ERR");
                 }
             }
             List<Mail> mail = new ArrayList<Mail>();
@@ -116,7 +117,7 @@ public class POP3Server extends Thread {
             while(flag==1) {
                 String str=buffread.readLine().toLowerCase();
                 if(str.equals("quit")){
-
+                    sendMsgToMe("+OK quit successfully");
                     break;
                 }
                 else if(str.equals("list")){
@@ -127,25 +128,26 @@ public class POP3Server extends Thread {
                 }
                 else if(str.contains("retr")){
                     if(str.equals("retr")){
-                        sendMsgToMe("-ERR");
+                        sendMsgToMe("-ERR retr");
                     }else {
                         int n=Integer.parseInt(str.substring(5));
-                        sendMsgToMe(mail.get(n).getMail_id());
-                        sendMsgToMe(mail.get(n).getFrom());
-                        sendMsgToMe(mail.get(n).getTo());
-                        sendMsgToMe(mail.get(n).getSubject());
-                        sendMsgToMe(mail.get(n).getContent());
-                        sendMsgToMe(""+mail.get(n).getTime());
+                        sendMsgToMe("mail_id:"+mail.get(n).getMail_id());
+                        sendMsgToMe("From:"+mail.get(n).getFrom());
+                        sendMsgToMe("To:"+mail.get(n).getTo());
+                        sendMsgToMe("Subject:"+mail.get(n).getSubject());
+                        sendMsgToMe("content:"+mail.get(n).getContent());
+                        sendMsgToMe("time:"+mail.get(n).getTime());
                     }
                 }
                 else if(str.contains("dele")){
                     if(str.equals("dele")){
-                        sendMsgToMe("-ERR");
+                        sendMsgToMe("-ERR dele");
                     }
                     else{
                         int n=Integer.parseInt(str.substring(5));
                         mailDao.deleMail(mail.get(n).getMail_id());
                         mail = mailDao.getMail(user);
+                        sendMsgToMe("+OK delete successfully");
                         length=mail.size();
                         mailLength=new int[length];
                         for(int i=0;i<length;i++) {
