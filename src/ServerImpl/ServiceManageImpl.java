@@ -21,7 +21,7 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	// 服务器实体
 	private ServerSocket mailServer;
-	ServerThread serverThread;
+	//private SMTPSever smtpSever;
 //	初始是private
 	public ServiceManageImpl(int port){
 		this.port = port;
@@ -31,24 +31,26 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 
 	@Override
 	public boolean stopSMTP() {
-		try {
-
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+//		try {
+//			smtpSever.stopServer();
+//			return true;
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+		return false;
 	}
 
 	@Override
 	public boolean startSMTP() {
-		try {
-
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+//		try {
+//			smtpSever.setupServer(9090);
+//			return true;
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+		return false;
 	}
 
 	@Override
@@ -78,7 +80,7 @@ public class ServiceManageImpl extends Thread implements ServiceManage{
 			System.out.println("Server has been set up.");
 			while(run_state){
 				Socket client = mailServer.accept();
-				ServerThread std = new ServerThread(client);
+				SMTPServer std = new SMTPServer(client);
 				std.start();
 				System.out.println("a new thread has been started to process a new client");
 			}

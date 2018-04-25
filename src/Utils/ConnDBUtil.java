@@ -27,7 +27,7 @@ public class ConnDBUtil {
 		}
 		return null;
 	}
-	
+	//DriverManager.getConnection("jdbc:mysql://localhost:3306/jsp_db?useSSL=false","root","123456");
 	public void closeConnection(Connection conn){
 		if(conn!=null){
 			try {

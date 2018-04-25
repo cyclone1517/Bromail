@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pop3 extends Thread {
+public class POP3Server extends Thread {
 
     private BufferedReader buffread;
     private OutputStream outs;
@@ -23,7 +23,7 @@ public class Pop3 extends Thread {
     Socket client;
     public void run (){
         try {
-            Pop3 server = new Pop3();
+            POP3Server server = new POP3Server();
             server.setupPop3Sever(110);
         }catch (IOException e){
             e.printStackTrace();
@@ -54,7 +54,7 @@ public class Pop3 extends Thread {
         ins = client.getInputStream();
         outs= client.getOutputStream();
         buffread = new BufferedReader(new InputStreamReader(ins));
-        sendMsgToMe("+OK Welcome to Pop3 Mail Serve\r\n");
+        sendMsgToMe("+OK Welcome to POP3Server Mail Serve\r\n");
         while(true){
             while(true){
 
