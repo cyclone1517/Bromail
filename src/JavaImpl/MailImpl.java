@@ -47,6 +47,7 @@ public class MailImpl implements MailDao {
                 Mail m=new Mail();
                 m.setContent(rs.getString("content"));
                 m.setFrom(rs.getString("sender"));
+                m.setTo(rs.getString("receiver"));
                 m.setTime(rs.getTimestamp("time"));
                 m.setSubject(rs.getString("subject"));
                 m.setMail_id(rs.getString("mail_id"));
