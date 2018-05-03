@@ -145,13 +145,19 @@ public class SMTPServer extends Thread{
 				else if(str.toUpperCase().contains("MAIL FROM:")) {
                     String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
                     mail.setFrom(sender);
-
                     sendMsgToMe("250 "+sender+"... sender OK\n");
                 }
 				else if (str.toUpperCase().contains("RCPT TO:")) {
-                    String receiver = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
-                    mail.setTo(receiver);
-                    sendMsgToMe("250 "+receiver+"... receiver OK\n");
+				    str = str.substring(str.indexOf('<')+1,str.lastIndexOf('>'));
+                    String[] receivers = str.split(";");
+                    for (int i = 0; i < receivers.length; i++) {
+                        sendMsgToMe("250 "+receivers[i]+"... receiver OK\n");
+                    }
+
+                    mail.setToList(receivers);
+//                  群发实现
+//                    mail.setTo(receiver);
+
                 }
 				else if (str.toUpperCase().equals("SUBJ")) {
                     sendMsgToMe("350 Enter Subject. end with \\n \n");

@@ -23,12 +23,16 @@ public class MailImpl implements MailDao {
             e.printStackTrace();
         }
         try {
-            ptmt.setString(1, mail.getFrom());
-            ptmt.setString(2, mail.getTo());
-            ptmt.setTimestamp(3,mail.getTime());
-            ptmt.setString(4,mail.getSubject());
-            ptmt.setString(5,mail.getContent());
-            ptmt.executeUpdate();
+
+            for (String receiver:mail.getToList()) {
+                ptmt.setString(1, mail.getFrom());
+                ptmt.setString(2, receiver);
+                ptmt.setTimestamp(3,mail.getTime());
+                ptmt.setString(4,mail.getSubject());
+                ptmt.setString(5,mail.getContent());
+                ptmt.executeUpdate();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

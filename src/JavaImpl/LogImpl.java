@@ -15,7 +15,7 @@ public class LogImpl implements LogDao{
     @Override
     public boolean addLog(Timestamp create_Date, LogType logType, Socket client) {
         System.out.println("[LogImpl]Running...");
-        String sql="insert into Log(popornot, create_Date, modify_date, content) values(?, ?, ?, ?)";
+        String sql="insert into LOG(popornot, create_Date, modify_date, content) values(?, ?, ?, ?)";
         ConnDBUtil util = new ConnDBUtil();
         Connection conn = util.openConnection();
         String content = client.getInetAddress().toString();
