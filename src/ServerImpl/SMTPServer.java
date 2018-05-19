@@ -242,8 +242,8 @@ public class SMTPServer extends Thread{
     }
 
     public void run(){
-        LogManage logManage = new LogManageImpl();
-        logManage.addLog(LogDao.LogType.SMTP, client);
+//        LogManage logManage = new LogManageImpl();
+//        logManage.addLog(LogDao.LogType.SMTP, client);
         System.out.println("Incoming client:" + client.getRemoteSocketAddress());
         processChat(this.client);
     }

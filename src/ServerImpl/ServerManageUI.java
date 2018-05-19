@@ -14,6 +14,7 @@ public class ServerManageUI {
     public ServiceManageImpl myServer;
 
     public static void main(String args[]) {
+
         new ServerManageUI().showUI();
     }
 
