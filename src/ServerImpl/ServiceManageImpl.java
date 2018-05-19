@@ -15,7 +15,7 @@ import ServerInterface.ServiceManage;
 public class ServiceManageImpl extends Thread implements ServiceManage{
     // 服务器的端口号
     private int port;
-    public enum ServerType {POP, SMTP}
+    enum ServerType {POP, SMTP}
     private ServerType serverType;
 
     // 服务器的运行状态
