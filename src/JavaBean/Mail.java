@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Mail {
-    private String mail_id;
+    private int mail_id;
     private String from;
     private String to;
     private String[] toList;
@@ -13,11 +13,11 @@ public class Mail {
     private String content;
     private Timestamp time;
 
-    public String getMail_id() {
+    public int getMail_id() {
         return mail_id;
     }
 
-    public void setMail_id(String mail_id) {
+    public void setMail_id(int mail_id) {
         this.mail_id = mail_id;
     }
 

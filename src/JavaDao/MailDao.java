@@ -8,5 +8,5 @@ import java.util.List;
 public interface MailDao {
     void storeMail(Mail mail);
     List<Mail> getMail(User user);//or void getMail();all users
-    void  deleMail(String mail_id);
+    void  deleMail(int mail_id);
 }

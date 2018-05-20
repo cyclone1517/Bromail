@@ -54,7 +54,7 @@ public class MailImpl implements MailDao {
                 m.setTo(rs.getString("receiver"));
                 m.setTime(rs.getTimestamp("time"));
                 m.setSubject(rs.getString("subject"));
-                m.setMail_id(rs.getString("mail_id"));
+                m.setMail_id(rs.getInt("mail_id"));
                 mail.add(m);
             }
         }catch (SQLException e){
@@ -62,13 +62,13 @@ public class MailImpl implements MailDao {
         }
         return mail;
     }
-    public   void deleMail(String mail_id){
+    public   void deleMail(int mail_id){
         String sql ="delete from MAIL where mail_id = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         try {
             PreparedStatement ptmt = conn.prepareStatement(sql);
-            ptmt.setString(1,mail_id);
+            ptmt.setInt(1,mail_id);
             ptmt.executeUpdate();
         }
         catch (SQLException e){
