@@ -1,7 +1,7 @@
 package JavaImpl;
 
-import JavaBean.FriendInfo;
-import JavaDao.FriendDao;
+import JavaBean.Entity.FriendInfo;
+import JavaBean.Dao.FriendDao;
 import Utils.ConnDBUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement; 

@@ -1,4 +1,4 @@
-package JavaDao;
+package JavaBean.Dao;
 
 import java.net.Socket;
 import java.sql.Timestamp;

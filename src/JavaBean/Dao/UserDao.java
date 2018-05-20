@@ -1,6 +1,6 @@
-package JavaDao;
+package JavaBean.Dao;
 
-import JavaBean.User;
+import JavaBean.Entity.User;
 
 public interface UserDao {
 	enum authorities {MANAGER, USER, STOP};	//权限常量0管理员-1用户-2禁用

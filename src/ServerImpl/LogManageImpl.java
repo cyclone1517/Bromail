@@ -1,6 +1,6 @@
 package ServerImpl;
 
-import JavaDao.LogDao;
+import JavaBean.Dao.LogDao;
 import JavaImpl.LogImpl;
 import ServerInterface.LogManage;
 

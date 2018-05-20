@@ -1,7 +1,7 @@
 package JavaImpl;
 
-import JavaBean.User;
-import JavaDao.UserDao;
+import JavaBean.Entity.User;
+import JavaBean.Dao.UserDao;
 import Utils.ConnDBUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

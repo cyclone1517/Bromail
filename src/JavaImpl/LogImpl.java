@@ -1,6 +1,6 @@
 package JavaImpl;
 
-import JavaDao.LogDao;
+import JavaBean.Dao.LogDao;
 import Utils.ConnDBUtil;
 
 import java.net.Socket;

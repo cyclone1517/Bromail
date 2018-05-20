@@ -1,12 +1,12 @@
 package ServerImpl;
 
-import JavaBean.Mail;
-import JavaBean.User;
-import JavaBean.FriendInfo;
-import JavaDao.LogDao;
-import JavaDao.MailDao;
-import JavaDao.UserDao;
-import JavaDao.FriendDao;
+import JavaBean.Entity.Mail;
+import JavaBean.Entity.User;
+import JavaBean.Entity.FriendInfo;
+import JavaBean.Dao.LogDao;
+import JavaBean.Dao.MailDao;
+import JavaBean.Dao.UserDao;
+import JavaBean.Dao.FriendDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
 import JavaImpl.FriendImpl;

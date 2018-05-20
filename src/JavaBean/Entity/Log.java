@@ -1,4 +1,4 @@
-package JavaBean;
+package JavaBean.Entity;
 
 import java.util.Date;
 

@@ -1,14 +1,13 @@
 package ServerImpl;
-import JavaBean.Mail;
-import JavaBean.User;
-import JavaDao.MailDao;
-import JavaDao.UserDao;
+import JavaBean.Entity.Mail;
+import JavaBean.Entity.User;
+import JavaBean.Dao.MailDao;
+import JavaBean.Dao.UserDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
 
 import java.io.*;
 
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;

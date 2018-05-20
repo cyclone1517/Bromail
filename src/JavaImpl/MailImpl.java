@@ -1,8 +1,8 @@
 package JavaImpl;
 
-import JavaBean.Mail;
-import JavaBean.User;
-import JavaDao.MailDao;
+import JavaBean.Entity.Mail;
+import JavaBean.Entity.User;
+import JavaBean.Dao.MailDao;
 import Utils.ConnDBUtil;
 
 import java.sql.*;

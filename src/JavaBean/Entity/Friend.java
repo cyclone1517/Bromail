@@ -1,4 +1,4 @@
-package JavaBean;
+package JavaBean.Entity;
 
 public class Friend {
     private String usr_id;

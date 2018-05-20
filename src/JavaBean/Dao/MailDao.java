@@ -1,7 +1,7 @@
-package JavaDao;
+package JavaBean.Dao;
 
-import JavaBean.Mail;
-import JavaBean.User;
+import JavaBean.Entity.Mail;
+import JavaBean.Entity.User;
 
 import java.util.List;
 

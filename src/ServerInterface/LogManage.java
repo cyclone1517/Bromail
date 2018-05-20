@@ -1,6 +1,6 @@
 package ServerInterface;
 
-import JavaDao.LogDao;
+import JavaBean.Dao.LogDao;
 
 import java.net.Socket;
 
