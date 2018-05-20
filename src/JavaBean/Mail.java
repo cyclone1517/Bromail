@@ -1,10 +1,11 @@
 package JavaBean;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class Mail {
+public class Mail implements Serializable{
     private int mail_id;
     private String from;
     private String to;

@@ -12,11 +12,7 @@ import JavaImpl.UserImpl;
 import JavaImpl.FriendImpl;
 import ServerInterface.LogManage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Timestamp;
@@ -124,7 +120,7 @@ public class SMTPServer extends Thread{
             ops = client.getOutputStream();
             ips = client.getInputStream();
             buffread = new BufferedReader(new InputStreamReader(ips));
-
+            ObjectInputStream ois = new ObjectInputStream(ips);
             if (!welcomeAndLogin()){
                 client.close();
             }
@@ -135,10 +131,15 @@ public class SMTPServer extends Thread{
             int state = 0;
             StringBuilder stringBuilder = new StringBuilder();
             String str = "";
-            flag = true;
-            while (flag) {
+
+            while (true) {
                 str = buffread.readLine();
-				if (str.toUpperCase().startsWith("HELO")) {
+                try {
+                    Mail mail1 = (Mail)ois.readObject();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                if (str.toUpperCase().startsWith("HELO")) {
 					String clientname = str.substring(str.indexOf(" ")+1, str.length());
 					sendMsgToMe("250 Hello "+clientname+", Please to meet you\n");
 				}
@@ -214,6 +215,24 @@ public class SMTPServer extends Thread{
         }
 
     }
+    private void processChat2(Socket client) throws IOException {
+        ops = client.getOutputStream();
+        ips = client.getInputStream();
+        buffread = new BufferedReader(new InputStreamReader(ips));
+        ObjectInputStream ois = new ObjectInputStream(ips);
+        Mail mail;
+        while (true) {
+            try {
+                mail = (Mail)ois.readObject();
+                client.shutdownInput();
+                System.out.println("Client send mail at: "+mail.getTime());
+                receiveMail(mail);
+                client.close();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     private void receiveMail(Mail mail) {
         MailDao mailDao = new MailImpl();
         mailDao.storeMail(mail);
@@ -245,7 +264,12 @@ public class SMTPServer extends Thread{
         LogManage logManage = new LogManageImpl();
         logManage.addLog(LogDao.LogType.SMTP, client);
         System.out.println("Incoming client:" + client.getRemoteSocketAddress());
-        processChat(this.client);
+//        processChat(this.client);
+        try {
+            processChat2(this.client);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
