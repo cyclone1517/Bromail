@@ -11,6 +11,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class POP3Server extends Thread {
 
@@ -18,7 +20,7 @@ public class POP3Server extends Thread {
     private OutputStream outs;
     private InputStream ins;
     private User user=new User();
-    private int flag=0;
+    private boolean flag=true;
     Socket client;
 
     public POP3Server(java.net.Socket client) {
@@ -35,95 +37,102 @@ public class POP3Server extends Thread {
             e.printStackTrace();
         }
     }
+    String str;
+    List<Mail> mail ;
+    int length;
+    int [] mailLength;
 
     private void processMessage(Socket client) throws Exception {
         ins = client.getInputStream();
         outs= client.getOutputStream();
-        ObjectInputStream dins = new ObjectInputStream(ins);
-   //     buffread = new BufferedReader(new InputStreamReader(ins));
+        DataInputStream dins = new DataInputStream(ins);
+
 //        ObjectInputStream ois = new ObjectInputStream(ins);
         ObjectOutputStream oos = new ObjectOutputStream(outs);
-        sendMsgToMe("+OK Welcome to POP3Server Mail Server\r\n");
+//        sendMsgToMe("+OK Welcome to POP3Server Mail Server\r\n");
 
-            List<Mail> mail ;
-            MailDao mailDao = new MailImpl();
-            user = new User();
-            user.setUsr_id("dbg@bro.com");
+        ExecutorService mThreadPool = Executors.newCachedThreadPool();
+        MailDao mailDao = new MailImpl();
+        user = new User();
+        user.setUsr_id("dbg@bro.com");
 
-            mail = mailDao.getMails(user);
-            int length=mail.size();
-            int [] mailLength=new int[length];
-            for(int i=0;i<length;i++) {
-                mailLength[i]=mail.get(i).getContent().length();
-            }
+        mail = mailDao.getMails(user);
+        length=mail.size();
+        mailLength=new int[length];
+        for(int i=0;i<length;i++) {
+            mailLength[i]=mail.get(i).getContent().length();
+        }
+        while (flag) {
+            mThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        buffread = new BufferedReader(new InputStreamReader(ins));
+                        str = buffread.readLine().toLowerCase();
+                        System.out.println(str);
 
-            String str;
-          //  while(true) {
-                byte [] data = new byte[256];
-                dins.readFully(data);
-                str = new String(data);
-                System.out.println(str);
-//                String str=buffread.readLine().toLowerCase();
-
-//                System.out.println(str);
-                if(str.equals("quit")){
-                    sendMsgToMe("+OK quit successfully");
-                    //break;
-                }
-                else if(str.equals("list")){
-//                    for(int i=0;i<length;i++){
-//                        sendMsgToMe(i+" "+mailLength[i]);
-//                    }
-//                    sendMsgToMe(".");
-                    System.out.println("hhh");
-                    sendMsgToMe("aaaaa");
-                    oos.writeObject(mail);
-                }
-                else if(str.equals("sent")){
-                    mail = mailDao.getSentOrDraftMails(user,0);
-                    oos.writeObject(mail);
-                }
-                else if(str.equals("draft")){
-                    mail = mailDao.getSentOrDraftMails(user,1);
-                    oos.writeObject(mail);
-                }
-                else if(str.contains("retr")){
-                    if(str.equals("retr")){
-                        sendMsgToMe("-ERR retr");
-                    }else {
-                        int n=Integer.parseInt(str.substring(5));
+                        if(str.equals("quit")){
+                            sendMsgToMe("+OK quit successfully");
+                            flag = false;
+                        }
+                        else if(str.equals("list")){
+                            System.out.println("hhh");
+                            System.out.println(mail.size());
+//                                sendMsgToMe("aaaaa");
+                            oos.writeObject(mail);
+                            oos.flush();
+                        }
+                        else if(str.equals("sent")){
+                            mail = mailDao.getSentOrDraftMails(user,0);
+                            oos.writeObject(mail);
+                            oos.flush();
+                        }
+                        else if(str.equals("draft")){
+                            mail = mailDao.getSentOrDraftMails(user,1);
+                            oos.writeObject(mail);
+                            oos.flush();
+                        }
+                        else if(str.contains("retr")){
+                            if(str.equals("retr")){
+                                sendMsgToMe("-ERR retr");
+                            }else {
+                                int n=Integer.parseInt(str.substring(5));
 //                        sendMsgToMe("mail_id:"+mail.get(n).getMail_id());
 //                        sendMsgToMe("From:"+mail.get(n).getFrom());
 //                        sendMsgToMe("To:"+mail.get(n).getTo());
 //                        sendMsgToMe("Subject:"+mail.get(n).getSubject());
 //                        sendMsgToMe("content:"+mail.get(n).getContent());
 //                        sendMsgToMe("time:"+mail.get(n).getTime());
-                        Mail mail1 = mailDao.getMail(n);
-                        oos.writeObject(mail1);
-                    }
-                }
-                else if(str.contains("dele")){
-                    if(str.equals("dele")){
-                        sendMsgToMe("-ERR dele");
-                    }
-                    else{
-                        int n=Integer.parseInt(str.substring(5));
-                        mailDao.deleMail(mail.get(n).getMail_id());
-                        mail = mailDao.getMails(user);
-                        sendMsgToMe("+OK delete successfully");
-                        length=mail.size();
-                        mailLength=new int[length];
-                        for(int i=0;i<length;i++) {
-                            mailLength[i]=mail.get(i).getContent().length();
+                                Mail mail1 = mailDao.getMail(n);
+                                oos.writeObject(mail1);
+                            }
                         }
+                        else if(str.contains("dele")){
+                            if(str.equals("dele")){
+                                sendMsgToMe("-ERR dele");
+                            }
+                            else{
+                                int n=Integer.parseInt(str.substring(5));
+                                mailDao.deleMail(mail.get(n).getMail_id());
+                                mail = mailDao.getMails(user);
+                                sendMsgToMe("+OK delete successfully");
+                                length=mail.size();
+                                mailLength=new int[length];
+                                for(int i=0;i<length;i++) {
+                                    mailLength[i]=mail.get(i).getContent().length();
+                                }
+                            }
+                        }
+                        else {
+                            sendMsgToMe("-ERR");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
-                else {
-                    sendMsgToMe("-ERR");
-                }
+            });
 
-          //  }
-
+        }
     }
 
     private boolean welcomeAndLogin(User user) {
@@ -132,14 +141,13 @@ public class POP3Server extends Thread {
         if (user == null) {
             user =new User();
             sendMsgToMe("-ERR user");
-            flag=0;
+            flag=false;
             return false;
         } else {
             System.out.println(user.getUsrname());
             return true;
         }
     }
-
 
     public void run (){
         try{
