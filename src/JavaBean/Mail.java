@@ -13,7 +13,8 @@ public class Mail implements Serializable{
     private String subject;
     private String content;
     private Timestamp time;
-
+    private int readStat;
+    private int sendStat;
     public int getMail_id() {
         return mail_id;
     }
@@ -68,6 +69,22 @@ public class Mail implements Serializable{
 
     public  void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public int getReadStat() {
+        return readStat;
+    }
+
+    public void setReadStat(int readStat) {
+        this.readStat = readStat;
+    }
+
+    public int getSendStat() {
+        return sendStat;
+    }
+
+    public void setSendStat(int sendStat) {
+        this.sendStat = sendStat;
     }
 
     public Mail() {

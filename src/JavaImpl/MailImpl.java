@@ -38,7 +38,7 @@ public class MailImpl implements MailDao {
         }
 
     }
-    public List<Mail> getMail(User user){
+    public List<Mail> getMails(User user){
         String sql ="select * from MAIL where receiver = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
@@ -62,6 +62,58 @@ public class MailImpl implements MailDao {
         }
         return mail;
     }
+
+    @Override
+    public List<Mail> getSentOrDraftMails(User user, int sendStat) {
+        String sql ="select * from MAIL where sender = ? and sendStat = ?";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+        List<Mail> mail=new ArrayList<Mail>();
+        try{
+            PreparedStatement ptmt = conn.prepareStatement(sql);
+            ptmt.setString(1,user.getUsr_id());
+            ptmt.setInt(2,sendStat);
+            ResultSet rs=ptmt.executeQuery();
+            while(rs.next()){
+                Mail m=new Mail();
+                m.setContent(rs.getString("content"));
+                m.setFrom(rs.getString("sender"));
+                m.setTo(rs.getString("receiver"));
+                m.setTime(rs.getTimestamp("time"));
+                m.setSubject(rs.getString("subject"));
+                m.setMail_id(rs.getInt("mail_id"));
+                mail.add(m);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return mail;
+    }
+
+    @Override
+    public Mail getMail(int mailId) {
+        String sql = "select * from MAIL where mail_id = ?";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+        PreparedStatement ptmt = null;
+        try {
+            ptmt = conn.prepareStatement(sql);
+            ptmt.setInt(1,mailId);
+            ResultSet rs=ptmt.executeQuery();
+            Mail m = new Mail();
+            m.setContent(rs.getString("content"));
+            m.setFrom(rs.getString("sender"));
+            m.setTo(rs.getString("receiver"));
+            m.setTime(rs.getTimestamp("time"));
+            m.setSubject(rs.getString("subject"));
+            m.setMail_id(rs.getInt("mail_id"));
+            return m;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public   void deleMail(int mail_id){
         String sql ="delete from MAIL where mail_id = ?";
         ConnDBUtil util=new ConnDBUtil();
