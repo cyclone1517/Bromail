@@ -39,13 +39,13 @@ public class POP3Server extends Thread {
     private void processMessage(Socket client) throws Exception {
         ins = client.getInputStream();
         outs= client.getOutputStream();
-        DataInputStream dins = new DataInputStream(ins);
-        buffread = new BufferedReader(new InputStreamReader(ins));
+        ObjectInputStream dins = new ObjectInputStream(ins);
+   //     buffread = new BufferedReader(new InputStreamReader(ins));
 //        ObjectInputStream ois = new ObjectInputStream(ins);
         ObjectOutputStream oos = new ObjectOutputStream(outs);
         sendMsgToMe("+OK Welcome to POP3Server Mail Server\r\n");
 
-            List<Mail> mail = new ArrayList<Mail>();
+            List<Mail> mail ;
             MailDao mailDao = new MailImpl();
             user = new User();
             user.setUsr_id("dbg@bro.com");
@@ -58,7 +58,7 @@ public class POP3Server extends Thread {
             }
 
             String str;
-            while(true) {
+          //  while(true) {
                 byte [] data = new byte[256];
                 dins.readFully(data);
                 str = new String(data);
@@ -68,7 +68,7 @@ public class POP3Server extends Thread {
 //                System.out.println(str);
                 if(str.equals("quit")){
                     sendMsgToMe("+OK quit successfully");
-                    break;
+                    //break;
                 }
                 else if(str.equals("list")){
 //                    for(int i=0;i<length;i++){
@@ -122,7 +122,7 @@ public class POP3Server extends Thread {
                     sendMsgToMe("-ERR");
                 }
 
-            }
+          //  }
 
     }
 
