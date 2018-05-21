@@ -34,27 +34,27 @@ public class SMTPServer extends Thread{
         this.client = client;
     }
 
-    public void sendMsgToMe(String msg){
-        byte[] data = msg.getBytes();
-        try {
-            System.out.println("[SMTPServer]data is:" + data);
-            ops.write(data);
-            ops.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void sendMsgToMe(String msg){
+//        byte[] data = msg.getBytes();
+//        try {
+//            System.out.println("[SMTPServer]data is:" + data);
+//            ops.write(data);
+//            ops.flush();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    public boolean isFlag() {
-        return flag;
-    }
-
-    public void setFlag(boolean flag) {
-        this.flag = flag;
-    }
-
-    private boolean state = false;
-    ServerSocket server;
+//    public boolean isFlag() {
+//        return flag;
+//    }
+//
+//    public void setFlag(boolean flag) {
+//        this.flag = flag;
+//    }
+//
+//    private boolean state = false;
+//    ServerSocket server;
 
 //	public void setupServer(int port) throws IOException {
 //		this.state = true;
@@ -75,190 +75,222 @@ public class SMTPServer extends Thread{
 //		server.close();
 //	}
 
-    private String[] commands = {"helo", "auth", "mail", "rcpt", "data", "quit"};
+//    private String[] commands = {"helo", "auth", "mail", "rcpt", "data", "quit"};
+//
+//    public void handleInput(SMTPServer server, String inStr) {
+//
+//        if (!checkCommand(inStr)) {
+//            server.sendMsgToMe("500 Invalid command");
+//            return;
+//        }
+//        String com = this.getCommand(inStr);
+//        String arg = this.getArgument(inStr);
+//
+//        if ("quit".equals(com)) {
+//            server.setFlag(false);
+//            return;
+//        }
+//    }
+//    private String getCommand(String inStr) {
+//        int bPos = inStr.indexOf(" ");
+//        if (bPos == -1)
+//            return inStr.toLowerCase();
+//        return inStr.substring(0, bPos).toLowerCase();
+//    }
+//    private String getArgument(String inStr) {
+//        int bPos = inStr.indexOf(" ");
+//        if (bPos == -1)
+//            return "";
+//        return inStr.substring(bPos + 1, inStr.length());
+//    }
+//    private boolean checkCommand(String inStr) {
+//        if ("".equals(inStr))
+//            return false;
+//
+//        String com = getCommand(inStr);
+//
+//        for (int i = 0; i < commands.length; i++)
+//            if (commands[i].endsWith(com))
+//                return true;
+//        return false;
+//    }
 
-    public void handleInput(SMTPServer server, String inStr) {
+//    private void processChat(Socket client){
+//		String servername = "bro.com";
+//        try {
+//            ops = client.getOutputStream();
+//            ips = client.getInputStream();
+//            buffread = new BufferedReader(new InputStreamReader(ips));
+//            ObjectInputStream ois = new ObjectInputStream(ips);
+//            if (!welcomeAndLogin()){
+//                client.close();
+//            }
+//            sendMsgToMe("\r\nYou have been logged in successfully!\r\n");
+//			sendMsgToMe("220 bro.com\n");
+//
+//            Mail mail = new Mail();
+//            int state = 0;
+//            StringBuilder stringBuilder = new StringBuilder();
+//            String str = "";
+//
+//            while (true) {
+//                str = buffread.readLine();
+//                try {
+//                    Mail mail1 = (Mail)ois.readObject();
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//                if (str.toUpperCase().startsWith("HELO")) {
+//					String clientname = str.substring(str.indexOf(" ")+1, str.length());
+//					sendMsgToMe("250 Hello "+clientname+", Please to meet you\n");
+//				}
+//				else if(str.toUpperCase().contains("MAIL FROM:")) {
+//                    String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
+//                    mail.setFrom(sender);
+//                    sendMsgToMe("250 "+sender+"... sender OK\n");
+//                }
+//				else if (str.toUpperCase().contains("RCPT TO:")) {
+//				    str = str.substring(str.indexOf('<')+1,str.lastIndexOf('>'));
+//                    String[] receivers = str.split(";");
+//                    for (int i = 0; i < receivers.length; i++) {
+//                        sendMsgToMe("250 "+receivers[i]+"... receiver OK\n");
+//                    }
+//
+//                    mail.setToList(receivers);
+////                  群发实现
+////                    mail.setTo(receiver);
+//
+//                }
+//				else if (str.toUpperCase().equals("SUBJ")) {
+//                    sendMsgToMe("350 Enter Subject. end with \\n \n");
+//                    state=1;
+//                    continue;
+//                }
+//				else if (str.toUpperCase().equals("DATA")) {
+//                    sendMsgToMe("354 Enter mail, end with \".\" on a line by itself\n");
+//                    state=2;
+//                    continue;
+//                }
+//				else if (str.toUpperCase().equals("QUIT")) {
+//					sendMsgToMe("221 "+servername+"\n");
+//                    break;
+//                }
+//                /**
+//                 * @author: YukonChen
+//                 * 自定义朋友搜索指令
+//                 */
+//                else if (str.equals("FRND")){
+//                    FriendDao fd = new FriendImpl();
+//                    List<FriendInfo> friendInfoList = fd.searchFriend("1000", "200");
+//                    int len = (friendInfoList==null)? 0:friendInfoList.size();
+//                    if(len==0){
+//                        sendMsgToMe("Sorry, you have not added any friends\r\n");
+//                    }
+//                    for(int ind=0; ind<len; ind++){
+//                        FriendInfo friendInfo = friendInfoList.get(ind);
+//                        sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
+//                    }
+//                }
+//
+//                if (state==1) {
+//                    mail.setSubject(str);
+//                    sendMsgToMe("Subject OK\n");
+//                }
+//                else if (state==2) {
+//                    if (str.equals(".")) {
+//                        mail.setContent(stringBuilder.toString());
+//                        sendMsgToMe("Content OK\n");
+//                    }else {
+//                        stringBuilder.append(str);
+//                    }
+//                }
+//
+//            }
+//            Timestamp time = new Timestamp(new java.util.Date().getTime());
+//            mail.setTime(time);
+//            MailDao mailDao = new MailImpl();
+//            mailDao.storeMail(mail);
+//            client.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+//    private void processChat2(Socket client) throws IOException {
+//        System.out.println("接收到了mail啦");
+//        ops = client.getOutputStream();
+//        ips = client.getInputStream();
+//        buffread = new BufferedReader(new InputStreamReader(ips));
+//        ObjectInputStream ois = new ObjectInputStream(ips);
+//        Mail mail;
+//        while (true) {
+//            try {
+//                mail = (Mail)ois.readObject();
+//                client.shutdownInput();
+//                System.out.println("Client send mail at: "+mail.getTime());
+//                receiveMail(mail);
+//                client.close();
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
-        if (!checkCommand(inStr)) {
-            server.sendMsgToMe("500 Invalid command");
-            return;
-        }
-        String com = this.getCommand(inStr);
-        String arg = this.getArgument(inStr);
+    private void smtp_process(Socket client) throws IOException {
 
-        if ("quit".equals(com)) {
-            server.setFlag(false);
-            return;
-        }
-    }
-    private String getCommand(String inStr) {
-        int bPos = inStr.indexOf(" ");
-        if (bPos == -1)
-            return inStr.toLowerCase();
-        return inStr.substring(0, bPos).toLowerCase();
-    }
-    private String getArgument(String inStr) {
-        int bPos = inStr.indexOf(" ");
-        if (bPos == -1)
-            return "";
-        return inStr.substring(bPos + 1, inStr.length());
-    }
-    private boolean checkCommand(String inStr) {
-        if ("".equals(inStr))
-            return false;
+        System.out.println("我进来SMTP啦");
 
-        String com = getCommand(inStr);
+        ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
 
-        for (int i = 0; i < commands.length; i++)
-            if (commands[i].endsWith(com))
-                return true;
-        return false;
-    }
-    private void processChat(Socket client){
-		String servername = "bro.com";
         try {
-            ops = client.getOutputStream();
-            ips = client.getInputStream();
-            buffread = new BufferedReader(new InputStreamReader(ips));
-            ObjectInputStream ois = new ObjectInputStream(ips);
-            if (!welcomeAndLogin()){
-                client.close();
-            }
-            sendMsgToMe("\r\nYou have been logged in successfully!\r\n");
-			sendMsgToMe("220 bro.com\n");
+            Mail mail = (Mail)ois.readObject();
 
-            Mail mail = new Mail();
-            int state = 0;
-            StringBuilder stringBuilder = new StringBuilder();
-            String str = "";
+            client.shutdownInput();
 
-            while (true) {
-                str = buffread.readLine();
-                try {
-                    Mail mail1 = (Mail)ois.readObject();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                if (str.toUpperCase().startsWith("HELO")) {
-					String clientname = str.substring(str.indexOf(" ")+1, str.length());
-					sendMsgToMe("250 Hello "+clientname+", Please to meet you\n");
-				}
-				else if(str.toUpperCase().contains("MAIL FROM:")) {
-                    String sender = str.substring(str.indexOf('<')+1, str.lastIndexOf('>'));
-                    mail.setFrom(sender);
-                    sendMsgToMe("250 "+sender+"... sender OK\n");
-                }
-				else if (str.toUpperCase().contains("RCPT TO:")) {
-				    str = str.substring(str.indexOf('<')+1,str.lastIndexOf('>'));
-                    String[] receivers = str.split(";");
-                    for (int i = 0; i < receivers.length; i++) {
-                        sendMsgToMe("250 "+receivers[i]+"... receiver OK\n");
-                    }
+            System.out.println("Client send mail at: "+mail.getTime());
+            System.out.println("mail's content " + mail.getContent());
+            System.out.println("mail's from " + mail.getFrom());
+            System.out.println("mail's subject " + mail.getSubject());
+            System.out.println("mail's id " + mail.getMail_id());
 
-                    mail.setToList(receivers);
-//                  群发实现
-//                    mail.setTo(receiver);
+            receiveMail(mail);
 
-                }
-				else if (str.toUpperCase().equals("SUBJ")) {
-                    sendMsgToMe("350 Enter Subject. end with \\n \n");
-                    state=1;
-                    continue;
-                }
-				else if (str.toUpperCase().equals("DATA")) {
-                    sendMsgToMe("354 Enter mail, end with \".\" on a line by itself\n");
-                    state=2;
-                    continue;
-                }
-				else if (str.toUpperCase().equals("QUIT")) {
-					sendMsgToMe("221 "+servername+"\n");
-                    break;
-                }
-                /**
-                 * @author: YukonChen
-                 * 自定义朋友搜索指令
-                 */
-                else if (str.equals("FRND")){
-                    FriendDao fd = new FriendImpl();
-                    List<FriendInfo> friendInfoList = fd.searchFriend("1000", "200");
-                    int len = (friendInfoList==null)? 0:friendInfoList.size();
-                    if(len==0){
-                        sendMsgToMe("Sorry, you have not added any friends\r\n");
-                    }
-                    for(int ind=0; ind<len; ind++){
-                        FriendInfo friendInfo = friendInfoList.get(ind);
-                        sendMsgToMe("#" + ind + ": " + friendInfo.getkeywordRst() + "\r\n");
-                    }
-                }
-
-                if (state==1) {
-                    mail.setSubject(str);
-                    sendMsgToMe("Subject OK\n");
-                }
-                else if (state==2) {
-                    if (str.equals(".")) {
-                        mail.setContent(stringBuilder.toString());
-                        sendMsgToMe("Content OK\n");
-                    }else {
-                        stringBuilder.append(str);
-                    }
-                }
-
-            }
-            Timestamp time = new Timestamp(new java.util.Date().getTime());
-            mail.setTime(time);
-            MailDao mailDao = new MailImpl();
-            mailDao.storeMail(mail);
             client.close();
-        } catch (IOException e) {
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }catch (EOFException e){
             e.printStackTrace();
         }
+        client.close();
+    }
 
-    }
-    private void processChat2(Socket client) throws IOException {
-        ops = client.getOutputStream();
-        ips = client.getInputStream();
-        buffread = new BufferedReader(new InputStreamReader(ips));
-        ObjectInputStream ois = new ObjectInputStream(ips);
-        Mail mail;
-        while (true) {
-            try {
-                mail = (Mail)ois.readObject();
-                client.shutdownInput();
-                System.out.println("Client send mail at: "+mail.getTime());
-                receiveMail(mail);
-                client.close();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
     private void receiveMail(Mail mail) {
         MailDao mailDao = new MailImpl();
         mailDao.storeMail(mail);
     }
-    private boolean welcomeAndLogin(){
-        try {
-            sendMsgToMe("Welcome to pretended brothers' mailServer!\r\n");
-            sendMsgToMe("please enter your userId: ");
-            String userId = buffread.readLine();
-            sendMsgToMe("\r\nplease enter your password: ");
-            String password = buffread.readLine();
 
-            UserDao userDao = new UserImpl();
-            User user = userDao.login(userId, password);
-            if(user==null){
-                sendMsgToMe("\r\nsorry no such user exists");
-                return false;
-            }
-            else{
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
+//    private boolean welcomeAndLogin(){
+//        try {
+//            sendMsgToMe("Welcome to pretended brothers' mailServer!\r\n");
+//            sendMsgToMe("please enter your userId: ");
+//            String userId = buffread.readLine();
+//            sendMsgToMe("\r\nplease enter your password: ");
+//            String password = buffread.readLine();
+//
+//            UserDao userDao = new UserImpl();
+//            User user = userDao.login(userId, password);
+//            if(user==null){
+//                sendMsgToMe("\r\nsorry no such user exists");
+//                return false;
+//            }
+//            else{
+//                return true;
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return true;
+//    }
 
     public void run(){
         LogManage logManage = new LogManageImpl();
@@ -266,7 +298,7 @@ public class SMTPServer extends Thread{
         System.out.println("Incoming client:" + client.getRemoteSocketAddress());
 //        processChat(this.client);
         try {
-            processChat2(this.client);
+            smtp_process(client);
         } catch (IOException e) {
             e.printStackTrace();
         }

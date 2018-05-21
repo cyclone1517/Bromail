@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MailServer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MailServer_jar</output-path>
+    <root id="archive" name="MailServer.jar">
+      <element id="module-output" name="MailServer" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/jarPackges/mysql-connector-java-5.1.44-bin.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

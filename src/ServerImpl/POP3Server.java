@@ -1,10 +1,12 @@
 package ServerImpl;
+import JavaBean.Dao.LogDao;
 import JavaBean.Entity.Mail;
 import JavaBean.Entity.User;
 import JavaBean.Dao.MailDao;
 import JavaBean.Dao.UserDao;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
+import ServerInterface.LogManage;
 
 import java.io.*;
 
@@ -36,13 +38,17 @@ public class POP3Server extends Thread {
         }
     }
 
-    private void processMessage(Socket client) throws Exception {
+    private void pop3_process(Socket client) throws IOException, EOFException {
+
+        System.out.println("我进来POP3啦");
+
         ins = client.getInputStream();
         outs= client.getOutputStream();
         ObjectInputStream dins = new ObjectInputStream(ins);
-   //     buffread = new BufferedReader(new InputStreamReader(ins));
-//        ObjectInputStream ois = new ObjectInputStream(ins);
+        buffread = new BufferedReader(new InputStreamReader(ins));
+        ObjectInputStream ois = new ObjectInputStream(ins);
         ObjectOutputStream oos = new ObjectOutputStream(outs);
+
         sendMsgToMe("+OK Welcome to POP3Server Mail Server\r\n");
 
             List<Mail> mail ;
@@ -126,25 +132,28 @@ public class POP3Server extends Thread {
 
     }
 
-    private boolean welcomeAndLogin(User user) {
-        UserDao userDao = new UserImpl();
-        user = userDao.login(user.getUsr_id(), user.getPassword());
-        if (user == null) {
-            user =new User();
-            sendMsgToMe("-ERR user");
-            flag=0;
-            return false;
-        } else {
-            System.out.println(user.getUsrname());
-            return true;
-        }
-    }
+//    private boolean welcomeAndLogin(User user) {
+//        UserDao userDao = new UserImpl();
+//        user = userDao.login(user.getUsr_id(), user.getPassword());
+//        if (user == null) {
+//            user =new User();
+//            sendMsgToMe("-ERR user");
+//            flag=0;
+//            return false;
+//        } else {
+//            System.out.println(user.getUsrname());
+//            return true;
+//        }
+//    }
 
 
     public void run (){
+        LogManage logManage = new LogManageImpl();
+        logManage.addLog(LogDao.LogType.POP, client);
+        System.out.println("Incoming client:" + client.getRemoteSocketAddress());
         try{
-            processMessage(this.client);
-        } catch (Exception e) {
+            pop3_process(client);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

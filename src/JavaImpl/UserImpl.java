@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class UserImpl implements UserDao {
@@ -84,5 +85,10 @@ public class UserImpl implements UserDao {
     @Override
     public boolean searchUser(String userId) {
         return false;
+    }
+
+    @Override
+    public ArrayList<User> showUserList() {
+        return null;
     }
 }
