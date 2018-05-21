@@ -41,60 +41,62 @@ public class POP3Server extends Thread {
     List<Mail> mail ;
     int length;
     int [] mailLength;
-
+    private  ExecutorService mThreadPool ;
     private void processMessage(Socket client) throws Exception {
         ins = client.getInputStream();
-        outs= client.getOutputStream();
+        outs = client.getOutputStream();
         DataInputStream dins = new DataInputStream(ins);
 
-//        ObjectInputStream ois = new ObjectInputStream(ins);
+        ObjectInputStream ois = new ObjectInputStream(ins);
         ObjectOutputStream oos = new ObjectOutputStream(outs);
+
 //        sendMsgToMe("+OK Welcome to POP3Server Mail Server\r\n");
 
-        ExecutorService mThreadPool = Executors.newCachedThreadPool();
         MailDao mailDao = new MailImpl();
         user = new User();
         user.setUsr_id("dbg@bro.com");
-
+        user.setPassword("123456");
         mail = mailDao.getMails(user);
-        length=mail.size();
-        mailLength=new int[length];
-        for(int i=0;i<length;i++) {
-            mailLength[i]=mail.get(i).getContent().length();
+        length = mail.size();
+        mailLength = new int[length];
+        for (int i = 0; i < length; i++) {
+            mailLength[i] = mail.get(i).getContent().length();
         }
-        while (flag) {
-            mThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
+        mThreadPool= Executors.newCachedThreadPool();
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+
+//                while () {
                     try {
-                        buffread = new BufferedReader(new InputStreamReader(ins));
-                        str = buffread.readLine().toLowerCase();
+                        str = (String)ois.readObject();
                         System.out.println(str);
 
                         if(str.equals("quit")){
-                            sendMsgToMe("+OK quit successfully");
+//                            sendMsgToMe("+OK quit successfully");
                             flag = false;
                         }
                         else if(str.equals("list")){
                             System.out.println("hhh");
                             System.out.println(mail.size());
-//                                sendMsgToMe("aaaaa");
+//                            sendMsgToMe("aaaaa");
                             oos.writeObject(mail);
                             oos.flush();
+                            oos.close();
                         }
                         else if(str.equals("sent")){
                             mail = mailDao.getSentOrDraftMails(user,0);
-                            oos.writeObject(mail);
-                            oos.flush();
+//                            oos.writeObject(mail);
+//                            oos.flush();
                         }
                         else if(str.equals("draft")){
                             mail = mailDao.getSentOrDraftMails(user,1);
-                            oos.writeObject(mail);
-                            oos.flush();
+//                            oos.writeObject(mail);
+//                            oos.flush();
                         }
                         else if(str.contains("retr")){
                             if(str.equals("retr")){
-                                sendMsgToMe("-ERR retr");
+//                                sendMsgToMe("-ERR retr");
                             }else {
                                 int n=Integer.parseInt(str.substring(5));
 //                        sendMsgToMe("mail_id:"+mail.get(n).getMail_id());
@@ -104,18 +106,18 @@ public class POP3Server extends Thread {
 //                        sendMsgToMe("content:"+mail.get(n).getContent());
 //                        sendMsgToMe("time:"+mail.get(n).getTime());
                                 Mail mail1 = mailDao.getMail(n);
-                                oos.writeObject(mail1);
+//                                oos.writeObject(mail1);
                             }
                         }
                         else if(str.contains("dele")){
                             if(str.equals("dele")){
-                                sendMsgToMe("-ERR dele");
+//                                sendMsgToMe("-ERR dele");
                             }
                             else{
                                 int n=Integer.parseInt(str.substring(5));
                                 mailDao.deleMail(mail.get(n).getMail_id());
                                 mail = mailDao.getMails(user);
-                                sendMsgToMe("+OK delete successfully");
+//                                sendMsgToMe("+OK delete successfully");
                                 length=mail.size();
                                 mailLength=new int[length];
                                 for(int i=0;i<length;i++) {
@@ -124,27 +126,26 @@ public class POP3Server extends Thread {
                             }
                         }
                         else {
-                            sendMsgToMe("-ERR");
+//                            sendMsgToMe("-ERR");
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-            });
+//            }
+        });
 
-        }
     }
 
     private boolean welcomeAndLogin(User user) {
         UserDao userDao = new UserImpl();
         user = userDao.login(user.getUsr_id(), user.getPassword());
         if (user == null) {
-            user =new User();
-            sendMsgToMe("-ERR user");
+//            sendMsgToMe("-ERR user");
             flag=false;
             return false;
         } else {
-            System.out.println(user.getUsrname());
+            System.out.println("welcome: "+user.getUsrname());
             return true;
         }
     }

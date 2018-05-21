@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Mail implements Serializable{
+    private static final long serialVersionUID = 1L;
     private int mail_id;
     private String from;
     private String to;
