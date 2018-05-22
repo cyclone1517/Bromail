@@ -82,7 +82,7 @@ public class POP3Server extends Thread {
                         oos.close();
                         System.out.println("process terminated");
                     } else if (str.contains("auth")){
-                        Boolean res = false;
+                        boolean res = false;
                         String[] mess = str.split(",");
                         if (mess.length>1) {
                             String uuid = mess[1];
