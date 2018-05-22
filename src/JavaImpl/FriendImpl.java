@@ -159,4 +159,30 @@ public class FriendImpl implements FriendDao{
         if(friendList.size()==0) return null;
         return friendList;
     }
+
+    @Override
+    public List<FriendInfo> getAllFriends(String userId) {
+        String sql = "select * from FRIEND inner join USER on usr_id where usr_id=?";
+        ConnDBUtil util = new ConnDBUtil();
+        Connection conn = util.openConnection();
+        List<FriendInfo> frdInfolist = new ArrayList<>();
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement ptmt = conn.prepareStatement(sql);
+            ptmt.setString(1, userId);
+            rs = ptmt.executeQuery();
+            while(rs.next()){
+                String friendId = rs.getString("friend_id");
+                String remarkNm = rs.getString("remarkName");
+                frdInfolist.add(new FriendInfo(friendId,remarkNm));
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            util.closeConnection(conn);
+        }
+        //客户端需要注意可能长度为0
+        return frdInfolist;
+    }
 }
