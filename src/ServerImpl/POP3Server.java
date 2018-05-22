@@ -1,8 +1,14 @@
 package ServerImpl;
+import JavaBean.Dao.FriendDao;
+import JavaBean.Entity.FriendInfo;
+import JavaBean.Dao.FriendDao;
+import JavaBean.Entity.FriendInfo;
 import JavaBean.Entity.Mail;
 import JavaBean.Entity.User;
 import JavaBean.Dao.MailDao;
 import JavaBean.Dao.UserDao;
+import JavaImpl.FriendImpl;
+import JavaImpl.FriendImpl;
 import JavaImpl.MailImpl;
 import JavaImpl.UserImpl;
 
@@ -122,6 +128,11 @@ public class POP3Server extends Thread {
                         String username = mess[0];
                         String password = mess[1];
                         sendDataToClient(find_user(username, password));
+                    } else if (str.equals("friends")) {  //朋友列表
+                        FriendDao fd = new FriendImpl();
+                        List<FriendInfo> frdInfoList = new ArrayList<>();
+                        System.out.println("got friend list successfully");
+                        sendDataToClient(frdInfoList);
                     } else {
                         System.out.println("unknow command");
                         sendDataToClient(err);
@@ -131,7 +142,6 @@ public class POP3Server extends Thread {
                 }
             }
         }
-
     }
 
     private User find_user(String name, String pass){

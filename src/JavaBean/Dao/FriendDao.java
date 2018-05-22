@@ -1,5 +1,6 @@
 package JavaBean.Dao;
 
+import JavaBean.Entity.Friend;
 import JavaBean.Entity.FriendInfo;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public interface FriendDao {
      * 如查到：2015级软件三班班群-> 2015年的美少女 -> XXX（QQ：XX2015XXXX）
      */
     public List<FriendInfo> searchFriend(String userId, String keyword);
+
+    public List<FriendInfo> getAllFriends(String userId);
 
     //搜索关键字可以是id可以是备注名
 }
