@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,6 +56,7 @@ public class POP3Server extends Thread {
     int [] mailLength;
     String err = "ERROR";
     MailDao mailDao = new MailImpl();
+    UserDao userDao = new UserImpl();
     private  ExecutorService mThreadPool ;
 
     private void init(User user1) {
@@ -69,12 +71,9 @@ public class POP3Server extends Thread {
     private void processMessage(Socket client) throws Exception {
 
         while (flag) {
-            if (ois.readObject() instanceof User) {
-                User user1 = (User) ois.readObject();
-                init(user1);
-                System.out.println("aaa");
-            } else {
-                str = (String) ois.readObject();
+            Object object = ois.readObject();
+            if (object.getClass().getSimpleName().equals("String")) {
+                str = (String)object;
                 System.out.println(str);
                 try {
                     if (str.equals("quit")) {
@@ -82,7 +81,24 @@ public class POP3Server extends Thread {
                         sendDataToClient("Bye Bye");
                         oos.close();
                         System.out.println("process terminated");
-                    } else if (str.equals("list")) {
+                    } else if (str.contains("auth")){
+                        Boolean res = false;
+                        String[] mess = str.split(",");
+                        if (mess.length>1) {
+                            String uuid = mess[1];
+                            System.out.println(uuid);
+                            User user1 = userDao.getUser(uuid);
+                            if (user1!=null) {
+                                res = true;
+                                init(user1);
+                                sendDataToClient(res);
+                            } else {
+                                sendDataToClient(res);
+                            }
+                        }else {
+                            sendDataToClient(res);
+                        }
+                    } else if (str.contains("list")) {
                         System.out.println("get all mails");
                         System.out.println(mail.size());
                         sendDataToClient(mail);
@@ -127,7 +143,15 @@ public class POP3Server extends Thread {
                         String[] mess = str.split(";");
                         String username = mess[0];
                         String password = mess[1];
-                        sendDataToClient(find_user(username, password));
+                        User user1 = find_user(username, password);
+                        String uuid = null;
+                        if (user1!=null) {
+                             uuid = UUID.randomUUID().toString();
+                             user1.setUuid(uuid);
+                             userDao.setuuid(user1);
+                             init(user1);
+                        }
+                        sendDataToClient(uuid);
                     } else if (str.equals("friends")) {  //朋友列表
                         FriendDao fd = new FriendImpl();
                         List<FriendInfo> frdInfoList = new ArrayList<>();
@@ -140,6 +164,10 @@ public class POP3Server extends Thread {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else {
+                User user1 = (User)object;
+                init(user1);
+                System.out.println("aaa");
             }
         }
     }

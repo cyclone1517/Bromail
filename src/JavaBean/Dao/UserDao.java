@@ -18,6 +18,9 @@ public interface UserDao {
 
 	public boolean searchUser(String userId);
 
+	public boolean setuuid(User user);
+
+	public User getUser(String uuid);
 	public ArrayList<User> showUserList();
 
 }

@@ -83,6 +83,51 @@ public class UserImpl implements UserDao {
     }
 
     @Override
+    public boolean setuuid(User user) {
+        String sql ="update USER set uuid=? where usr_id=?";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+        try {
+            PreparedStatement ptmt=conn.prepareStatement(sql);
+            ptmt.setString(1, user.getUuid());
+            ptmt.setString(2,user.getUsr_id());
+            ptmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            util.closeConnection(conn);
+        }
+        return false;
+    }
+
+    @Override
+    public User getUser(String uuid) {
+        String sql="select * from USER where uuid = ?";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+
+        try {
+            PreparedStatement ptmt = conn.prepareStatement(sql);
+            ptmt.setString(1, uuid);
+            ResultSet rs = ptmt.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setUsr_id(rs.getString("usr_id"));
+                user.setUsrname(rs.getString("usrname"));
+                user.setPassword(rs.getString("password"));
+                return user;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally{
+            util.closeConnection(conn);
+        }
+        return null;
+    }
+
+    @Override
     public boolean searchUser(String userId) {
         return false;
     }

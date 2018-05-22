@@ -7,7 +7,7 @@ public class User implements Serializable {
     private String usrname;
     private String password;
     private int authority;
-
+    private String uuid;
     public String getUsr_id() {
         return usr_id;
     }
@@ -38,5 +38,13 @@ public class User implements Serializable {
 
     public void setAuthority(int authority) {
         this.authority = authority;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }
