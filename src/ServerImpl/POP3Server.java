@@ -21,7 +21,7 @@ public class POP3Server extends Thread {
     private InputStream ins;
     ObjectInputStream ois;
     ObjectOutputStream oos;
-    private User user=new User();
+    private User user = new User();
     private boolean flag=true;
     Socket client;
 
@@ -53,9 +53,6 @@ public class POP3Server extends Thread {
     private void processMessage(Socket client) throws Exception {
 
         DataInputStream dins = new DataInputStream(ins);
-
-
-
 
         MailDao mailDao = new MailImpl();
         user = new User();
@@ -107,7 +104,13 @@ public class POP3Server extends Thread {
                             mailLength[i] = mail.get(i).getContent().length();
                         }
                     }
-                } else {
+                } else if (str.contains(";")){ // 账号密码
+                    String [] mess = str.split(";");
+                    String username = mess[0];
+                    String password = mess[1];
+                    sendDataToClient(find_user(username, password));
+                }
+                else {
                     System.out.println("unknow command");
                     sendDataToClient(err);
                 }
@@ -116,6 +119,10 @@ public class POP3Server extends Thread {
             }
         }
 
+    }
+
+    private User find_user(String name, String pass){
+        return new UserImpl().login(name, pass);
     }
 
     private boolean welcomeAndLogin(User user) {
