@@ -120,7 +120,7 @@ public class MailImpl implements MailDao {
         }
     }
 
-    public void deleMail(int mail_id){
+    public boolean deleMail(int mail_id){
         String sql ="delete from MAIL where mail_id = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
@@ -128,11 +128,28 @@ public class MailImpl implements MailDao {
             PreparedStatement ptmt = conn.prepareStatement(sql);
             ptmt.setInt(1,mail_id);
             ptmt.executeUpdate();
+            return true;
         }
         catch (SQLException e){
             e.printStackTrace();
+            return false;
         }
-
     }
 
+    @Override
+    public boolean readMail(int mail_id) {
+        String sql ="update MAIL set readStat=1 where mail_id = ?";
+        ConnDBUtil util=new ConnDBUtil();
+        Connection conn=util.openConnection();
+        try {
+            PreparedStatement ptmt = conn.prepareStatement(sql);
+            ptmt.setInt(1,mail_id);
+            ptmt.executeUpdate();
+            return true;
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

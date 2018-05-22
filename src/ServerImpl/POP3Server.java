@@ -93,16 +93,27 @@ public class POP3Server extends Thread {
                         sendDataToClient(err);
                     } else {
                         int mail_id = Integer.parseInt(str.substring(5));
-                        mailDao.deleMail(mail_id);
+                        boolean res = mailDao.deleMail(mail_id);
                         mail = mailDao.getMails(user);
                         System.out.println("deleted successfully");
                         System.out.println(mail.size());
                         sendDataToClient(mail);
+                        sendDataToClient(res);
                         length = mail.size();
                         mailLength = new int[length];
                         for (int i = 0; i < length; i++) {
                             mailLength[i] = mail.get(i).getContent().length();
                         }
+                    }
+                } else if (str.contains("read")) {
+                    if (str.equals("read")) {
+                        sendDataToClient(err);
+                    } else {
+                        int mail_id = Integer.parseInt(str.substring(5));
+                        boolean res = mailDao.readMail(mail_id);
+                        mail = mailDao.getMails(user);
+                        System.out.println("Mail has been read");
+                        sendDataToClient(res);
                     }
                 } else if (str.contains(";")){ // 账号密码
                     String [] mess = str.split(";");

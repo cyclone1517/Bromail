@@ -11,5 +11,6 @@ public interface MailDao {
     List<Mail> getSentOrDraftMails(User user, int sendStat);//get sent Mails by one user
 
     Mail getMail(int mailId);
-    void deleMail(int mail_id);
+    boolean deleMail(int mail_id);
+    boolean readMail(int mail_id);
 }
