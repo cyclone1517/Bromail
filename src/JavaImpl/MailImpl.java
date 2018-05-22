@@ -39,7 +39,7 @@ public class MailImpl implements MailDao {
 
     }
     public List<Mail> getMails(User user){
-        String sql ="select * from MAIL where receiver = ?";
+        String sql ="select * from MAIL where receiver = ? ORDER BY mail_id DESC ";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         List<Mail> mail=new ArrayList<Mail>();
@@ -67,7 +67,7 @@ public class MailImpl implements MailDao {
 
     @Override
     public List<Mail> getSentOrDraftMails(User user, int sendStat) {
-        String sql ="select * from MAIL where sender = ? and sendStat = ?";
+        String sql ="select * from MAIL where sender = ? and sendStat = ? ORDER BY mail_id DESC ";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         List<Mail> mail=new ArrayList<Mail>();
@@ -96,7 +96,7 @@ public class MailImpl implements MailDao {
 
     @Override
     public Mail getMail(int mailId) {
-        String sql = "select * from MAIL where mail_id = ?";
+        String sql = "select * from MAIL where mail_id = ? ";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();
         PreparedStatement ptmt = null;
