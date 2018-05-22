@@ -2,6 +2,8 @@ package JavaBean.Dao;
 
 import JavaBean.Entity.User;
 
+import java.util.ArrayList;
+
 public interface UserDao {
 	enum authorities {MANAGER, USER, STOP};	//权限常量0管理员-1用户-2禁用
 
@@ -15,4 +17,7 @@ public interface UserDao {
 	//设置昵称，修改密码，修改权限，禁用用户等
 
 	public boolean searchUser(String userId);
+
+	public ArrayList<User> showUserList();
+
 }
