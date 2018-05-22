@@ -55,6 +55,8 @@ public class MailImpl implements MailDao {
                 m.setTime(rs.getTimestamp("time"));
                 m.setSubject(rs.getString("subject"));
                 m.setMail_id(rs.getInt("mail_id"));
+                m.setReadStat(rs.getInt("readStat"));
+                m.setSendStat(rs.getInt("sendStat"));
                 mail.add(m);
             }
         }catch (SQLException e){
@@ -82,6 +84,8 @@ public class MailImpl implements MailDao {
                 m.setTime(rs.getTimestamp("time"));
                 m.setSubject(rs.getString("subject"));
                 m.setMail_id(rs.getInt("mail_id"));
+                m.setReadStat(rs.getInt("readStat"));
+                m.setSendStat(rs.getInt("sendStat"));
                 mail.add(m);
             }
         }catch (SQLException e){
@@ -107,6 +111,8 @@ public class MailImpl implements MailDao {
             m.setTime(rs.getTimestamp("time"));
             m.setSubject(rs.getString("subject"));
             m.setMail_id(rs.getInt("mail_id"));
+            m.setReadStat(rs.getInt("readStat"));
+            m.setSendStat(rs.getInt("sendStat"));
             return m;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -114,7 +120,7 @@ public class MailImpl implements MailDao {
         }
     }
 
-    public   void deleMail(int mail_id){
+    public void deleMail(int mail_id){
         String sql ="delete from MAIL where mail_id = ?";
         ConnDBUtil util=new ConnDBUtil();
         Connection conn=util.openConnection();

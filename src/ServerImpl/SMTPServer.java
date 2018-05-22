@@ -56,25 +56,6 @@ public class SMTPServer extends Thread{
     private boolean state = false;
     ServerSocket server;
 
-//	public void setupServer(int port) throws IOException {
-//		this.state = true;
-//
-//		server = new ServerSocket(port);
-//		System.out.println("SMTP Sever Activated! Port is "+port);
-//
-//		while (state) {
-//			Socket client = server.accept();
-//			logManage.addLog(LogDao.LogType.SMTP, client);
-//			System.out.println("Incoming client");
-//			SMTPServer SMTPServer = new SMTPServer(client);
-//			SMTPServer.start();
-//		}
-//	}
-//	public void stopServer() throws IOException {
-//		this.state = false;
-//		server.close();
-//	}
-
     private String[] commands = {"helo", "auth", "mail", "rcpt", "data", "quit"};
 
     public void handleInput(SMTPServer server, String inStr) {
