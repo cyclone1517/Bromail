@@ -1,6 +1,8 @@
 package JavaBean.Entity;
 
-public class Friend {
+import java.io.Serializable;
+
+public class Friend implements Serializable {
     private String usr_id;
     private String friend_id;
     private int blackFlag;

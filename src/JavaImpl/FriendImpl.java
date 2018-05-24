@@ -162,7 +162,7 @@ public class FriendImpl implements FriendDao{
 
     @Override
     public List<FriendInfo> getAllFriends(String userId) {
-        String sql = "select * from FRIEND inner join USER on usr_id where usr_id=?";
+        String sql = "select * from FRIEND where usr_id=?";
         ConnDBUtil util = new ConnDBUtil();
         Connection conn = util.openConnection();
         List<FriendInfo> frdInfolist = new ArrayList<>();

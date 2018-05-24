@@ -82,7 +82,7 @@ public class POP3Server extends Thread {
                         oos.close();
                         System.out.println("process terminated");
                     } else if (str.contains("auth")){
-                        boolean res = false;
+                        Boolean res = false;
                         String[] mess = str.split(",");
                         if (mess.length>1) {
                             String uuid = mess[1];
@@ -117,11 +117,12 @@ public class POP3Server extends Thread {
                             sendDataToClient(err);
                         } else {
                             int mail_id = Integer.parseInt(str.substring(5));
-                            boolean res = mailDao.deleMail(mail_id);
+                            Boolean res = mailDao.deleMail(mail_id);
                             mail = mailDao.getMails(user);
                             System.out.println("deleted successfully");
                             System.out.println(mail.size());
-                            sendDataToClient(mail);
+                            System.out.println(res);
+//                            sendDataToClient(mail);
                             sendDataToClient(res);
                             length = mail.size();
                             mailLength = new int[length];
@@ -154,7 +155,7 @@ public class POP3Server extends Thread {
                         sendDataToClient(uuid);
                     } else if (str.equals("friends")) {  //朋友列表
                         FriendDao fd = new FriendImpl();
-                        List<FriendInfo> frdInfoList = new ArrayList<>();
+                        List<FriendInfo> frdInfoList = fd.getAllFriends(user.getUsr_id());
                         System.out.println("got friend list successfully");
                         sendDataToClient(frdInfoList);
                     } else {
